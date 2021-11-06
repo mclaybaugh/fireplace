@@ -138,7 +138,7 @@ function fireplace_scripts() {
     wp_enqueue_style( 'fireplace-style', get_stylesheet_uri(), array(), _S_VERSION );
 }
 add_action( 'wp_enqueue_scripts', 'fireplace_scripts' );
-require get_template_directory() . '/inc/custom-header.php';
+//require get_template_directory() . '/inc/custom-header.php';
 require get_template_directory() . '/inc/template-tags.php';
 require get_template_directory() . '/inc/template-functions.php';
 // Post types
