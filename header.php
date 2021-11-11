@@ -66,7 +66,7 @@ $highlightColor = get_theme_mod('fireplace_highlight_color', '#3582c4');
 				<?php
 			else :
 				?>
-				<p class="site-title"><a href="<?php echo esc_url(home_url('/')); ?>" rel="home"><?php bloginfo('name'); ?></a></p>
+				<div class="site-title"><a href="<?php echo esc_url(home_url('/')); ?>" rel="home"><?php bloginfo('name'); ?></a></div>
 				<?php
 			endif;
 			$fireplace_description = get_bloginfo( 'description', 'display' );

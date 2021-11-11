@@ -93,8 +93,8 @@ main {
  * `article` contexts in Chrome, Firefox, and Safari.
  */
 h1 {
-	font-size: 2em;
-	margin: 0.67em 0;
+	font-size: 2rem;
+	margin: 0.67rem 0;
 }
 
 /* Grouping content
@@ -1004,12 +1004,15 @@ body {
 	color: var(--text-color);
 }
 
-h1,h2,h3,h4,h5,h6 {
+h1,h2,h3,h4,h5,h6,
+.site-title {
 	font-family: var(--heading-font);
-	font-weight: 400px;
+	font-weight: 800;
 }
 
-a {
+a,
+a:visited,
+a:active {
 	color: inherit;
 	text-decoration: underline;
 }
@@ -1017,10 +1020,6 @@ a {
 a:hover {
 	color: inherit;
 	text-decoration-style: dotted;
-}
-
-a:visited {
-	color: inherit;
 }
 
 input[type="text"],
@@ -1039,4 +1038,12 @@ input[type="submit"] {
 	line-height: 1.5;
 	cursor: pointer;
 	border-radius: 0;
+}
+
+div.site-title a {
+	font-size: 2em;
+}
+
+div.site-title {
+	margin: 0.67rem 0;
 }

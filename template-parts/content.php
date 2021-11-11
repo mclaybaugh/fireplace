@@ -17,15 +17,7 @@
 		else :
 			the_title( '<h2 class="entry-title"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h2>' );
 		endif;
-
-		if ( 'post' === get_post_type() ) :
-			?>
-			<div class="entry-meta">
-				<?php
-				fireplace_posted_on();
-				?>
-			</div><!-- .entry-meta -->
-		<?php endif; ?>
+		?>
 	</header><!-- .entry-header -->
 
 	<?php fireplace_post_thumbnail(); ?>
@@ -56,6 +48,10 @@
 		?>
 	</div><!-- .entry-content -->
 
+	<?php if (is_singular()): ?>
+	<hr>
+	<?php endif; ?>
+	
 	<footer class="entry-footer">
 		<?php fireplace_entry_footer(); ?>
 	</footer><!-- .entry-footer -->
