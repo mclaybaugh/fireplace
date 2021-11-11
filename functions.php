@@ -7,11 +7,9 @@
  * @package fireplace
  */
 
-$templateDir = get_template_directory();
-
-if ( ! defined( '_S_VERSION' ) ) {
+if ( ! defined( 'FIREPLACE_VERSION' ) ) {
     // Replace the version number of the theme on each release.
-    define( '_S_VERSION', '1.0.0' );
+    define( 'FIREPLACE_VERSION', '1.0.0' );
 }
 
 if ( ! function_exists( 'fireplace_setup' ) ) :
@@ -67,19 +65,19 @@ if ( ! function_exists( 'fireplace_setup' ) ) :
         );
 
         // Set up the WordPress core custom background feature.
-        add_theme_support(
-            'custom-background',
-            apply_filters(
-                'fireplace_custom_background_args',
-                array(
-                    'default-color' => 'ffffff',
-                    'default-image' => '',
-                )
-            )
-        );
+        // add_theme_support(
+        //     'custom-background',
+        //     apply_filters(
+        //         'fireplace_custom_background_args',
+        //         array(
+        //             'default-color' => 'ffffff',
+        //             'default-image' => '',
+        //         )
+        //     )
+        // );
 
         // Add theme support for selective refresh for widgets.
-        add_theme_support( 'customize-selective-refresh-widgets' );
+        add_theme_support('customize-selective-refresh-widgets');
 
         /**
          * Add support for core custom logo.
@@ -135,16 +133,19 @@ add_action( 'widgets_init', 'fireplace_widgets_init' );
  * Enqueue scripts and styles.
  */
 function fireplace_scripts() {
-    wp_enqueue_style( 'fireplace-style', get_stylesheet_uri(), array(), _S_VERSION );
+    wp_enqueue_style( 'fireplace-style', get_stylesheet_uri(), array(), FIREPLACE_VERSION );
 }
 add_action( 'wp_enqueue_scripts', 'fireplace_scripts' );
-//require get_template_directory() . '/inc/custom-header.php';
-require get_template_directory() . '/inc/template-tags.php';
-require get_template_directory() . '/inc/template-functions.php';
+
+$templateDir = get_template_directory();
+//require $templateDir . '/inc/custom-header.php';
+require $templateDir . '/inc/template-tags.php';
+require $templateDir . '/inc/template-functions.php';
+require $templateDir . '/inc/customizer.php';
 // Post types
-require get_template_directory() . '/post-types/idea.php';
-require get_template_directory() . '/post-types/task.php';
-require get_template_directory() . '/post-types/journal.php';
+require $templateDir . '/post-types/idea.php';
+require $templateDir . '/post-types/task.php';
+require $templateDir . '/post-types/journal.php';
 
 /**
  * For private post types, prevent the "publish" status on save.
