@@ -23,7 +23,6 @@
 			<div class="entry-meta">
 				<?php
 				fireplace_posted_on();
-				fireplace_posted_by();
 				?>
 			</div><!-- .entry-meta -->
 		<?php endif; ?>

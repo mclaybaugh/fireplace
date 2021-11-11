@@ -74,24 +74,24 @@ if ( ! function_exists( 'fireplace_entry_footer' ) ) :
 			}
 		}
 
-		if ( ! is_single() && ! post_password_required() && ( comments_open() || get_comments_number() ) ) {
-			echo '<span class="comments-link">';
-			comments_popup_link(
-				sprintf(
-					wp_kses(
-						/* translators: %s: post title */
-						__( 'Leave a Comment<span class="screen-reader-text"> on %s</span>', 'fireplace' ),
-						array(
-							'span' => array(
-								'class' => array(),
-							),
-						)
-					),
-					wp_kses_post( get_the_title() )
-				)
-			);
-			echo '</span>';
-		}
+		// if ( ! is_single() && ! post_password_required() && ( comments_open() || get_comments_number() ) ) {
+		// 	echo '<span class="comments-link">';
+		// 	comments_popup_link(
+		// 		sprintf(
+		// 			wp_kses(
+		// 				/* translators: %s: post title */
+		// 				__( 'Leave a Comment<span class="screen-reader-text"> on %s</span>', 'fireplace' ),
+		// 				array(
+		// 					'span' => array(
+		// 						'class' => array(),
+		// 					),
+		// 				)
+		// 			),
+		// 			wp_kses_post( get_the_title() )
+		// 		)
+		// 	);
+		// 	echo '</span>';
+		// }
 
 		edit_post_link(
 			sprintf(
@@ -150,16 +150,5 @@ if ( ! function_exists( 'fireplace_post_thumbnail' ) ) :
 
 			<?php
 		endif; // End is_singular().
-	}
-endif;
-
-if ( ! function_exists( 'wp_body_open' ) ) :
-	/**
-	 * Shim for sites older than 5.2.
-	 *
-	 * @link https://core.trac.wordpress.org/ticket/12563
-	 */
-	function wp_body_open() {
-		do_action( 'wp_body_open' );
 	}
 endif;
