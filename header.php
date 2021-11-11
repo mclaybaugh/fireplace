@@ -8,7 +8,12 @@
  *
  * @package fireplace
  */
-
+$fontImportUrl = get_theme_mod('fireplace_font_import_url', '');
+$bodyFont = get_theme_mod('fireplace_body_font', '');
+$headingFont = get_theme_mod('fireplace_heading_font', '');
+$backgroundColor = get_theme_mod('fireplace_background_color', '#ffffff');
+$textColor = get_theme_mod('fireplace_text_color', '#404040');
+$highlightColor = get_theme_mod('fireplace_highlight_color', '#3582c4');
 ?>
 <!doctype html>
 <html <?php language_attributes(); ?>>
@@ -19,11 +24,30 @@
 
 	<?php wp_head(); ?>
 	<style>
-	@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400;1,700&family=Montserrat:ital,wght@0,100;0,200;0,400;0,900;1,100;1,200;1,400;1,900&display=swap');
+	<?php if ($fontImportUrl) : ?>
+	@import url('<?php echo $fontImportUrl; ?>');
+	<?php endif; ?>
 
 	:root {
-		--body-font: Lori, serif;
-		--heading-font: Montserrat, sans-serif;
+		<?php if ($bodyFont) : ?>
+		--body-font: <?php echo $bodyFont; ?>;
+		<?php endif; ?>
+
+		<?php if ($headingFont) : ?>
+		--heading-font: <?php echo $headingFont; ?>;
+		<?php endif; ?>
+
+		<?php if ($backgroundColor) : ?>
+		--background-color: <?php echo $backgroundColor; ?>;
+		<?php endif; ?>
+
+		<?php if ($textColor) : ?>
+		--text-color: <?php echo $textColor; ?>;
+		<?php endif; ?>
+
+		<?php if ($highlightColor) : ?>
+		--highlight-color: <?php echo $highlightColor; ?>;
+		<?php endif; ?>
 	}
 	</style>
 </head>
