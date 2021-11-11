@@ -3,6 +3,7 @@ get_header();
 ?>
 <main id="primary" class="site-main padding-2">
 	<?php the_title( '<h1 class="entry-title">', '</h1>' ); ?>
+	<hr/>
 	
 	<div class="constrained-width">
 		<?php
