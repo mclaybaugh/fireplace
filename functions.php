@@ -146,6 +146,7 @@ require $templateDir . '/inc/customizer.php';
 require $templateDir . '/post-types/idea.php';
 require $templateDir . '/post-types/task.php';
 require $templateDir . '/post-types/journal.php';
+require $templateDir . '/post-types/transaction.php';
 
 /**
  * For private post types, prevent the "publish" status on save.
@@ -156,7 +157,8 @@ function fireplace_private_post_types($post)
     $private_types = [
         'journal',
         'idea',
-        'task'
+        'task',
+        'transaction',
     ];
     if (in_array($post['post_type'], $private_types)
     && $post['post_status'] == 'publish') {

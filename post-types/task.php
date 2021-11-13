@@ -1,5 +1,5 @@
 <?php
-function cptui_register_my_cpts_task() {
+function fireplace_register_task() {
 
 	/**
 	 * Post Type: Tasks.
@@ -38,4 +38,4 @@ function cptui_register_my_cpts_task() {
 	register_post_type( "task", $args );
 }
 
-add_action( 'init', 'cptui_register_my_cpts_task' );
+add_action( 'init', 'fireplace_register_task' );

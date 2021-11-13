@@ -58,6 +58,7 @@ if ( ! function_exists( 'fireplace_entry_footer' ) ) :
 	 */
 	function fireplace_entry_footer() {
 		// Hide category and tag text for pages.
+		fireplace_posted_by();
 		fireplace_posted_on();
 		if ( 'post' === get_post_type() ) {
 			/* translators: used between list items, there is a space after the comma */

@@ -999,15 +999,21 @@ textarea {
 
 body {
 	font-family: var(--body-font);
-	font-size: 16px;
+	font-size: 18px;
 	background-color: var(--background-color);
 	color: var(--text-color);
+	line-height: 1.6;
 }
 
 h1,h2,h3,h4,h5,h6,
 .site-title {
 	font-family: var(--heading-font);
-	font-weight: 800;
+	font-weight: 600;
+}
+
+h1.entry-title {
+	font-size: 3rem;
+	text-align: center;
 }
 
 a,

@@ -1,6 +1,6 @@
 <?php
 
-function cptui_register_my_cpts_journal() {
+function fireplace_register_journal() {
 
 /**
  * Post Type: Journals.
@@ -39,4 +39,4 @@ $args = [
 register_post_type( "journal", $args );
 }
 
-add_action( 'init', 'cptui_register_my_cpts_journal' );
+add_action( 'init', 'fireplace_register_journal' );
