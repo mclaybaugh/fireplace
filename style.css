@@ -1053,3 +1053,15 @@ div.site-title a {
 div.site-title {
 	margin: 0.67rem 0;
 }
+
+.site-footer {
+	padding: 2rem;
+}
+
+.flex {
+	display: flex;
+}
+
+.justify-space-between {
+	justify-content: space-between;
+}

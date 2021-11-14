@@ -1,4 +1,5 @@
 <?php
+
 $title = 'Search Results for: <span>' . get_search_query() . '</span>';
 fireplace_constrainedWidthPage(
 	$title,

@@ -1,4 +1,5 @@
 <?php
+
 fireplace_constrainedWidthPage(null, function() {
 	if (have_posts()) {
 		while (have_posts()) {
