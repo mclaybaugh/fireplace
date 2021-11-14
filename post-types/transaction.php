@@ -203,3 +203,40 @@ if( function_exists('acf_add_local_field_group') ):
     ));
 endif;
 
+// add in admin columns
+add_filter(
+    'manage_transaction_posts_columns',
+    'fireplace_transaction_admin_columns'
+);
+function fireplace_transaction_admin_columns($columns)
+{
+    unset($columns['date']);
+    $columns['transaction_date'] = "Transaction Date";
+    $columns['amount'] = "Amount";
+    $columns['direction'] = "Direction";
+    return $columns;
+}
+
+add_filter(
+    'manage_transaction_posts_custom_column',
+    'fireplace_transaction_column_data',
+    10,
+    2
+);
+
+function fireplace_transaction_column_data($column, $post_id)
+{
+    if (!function_exists('get_field')) {
+        return;
+    }
+    if ($column === 'transaction_date') {
+        echo get_field('datetime', $post_id);
+    } elseif ($column === 'amount') {
+        $amount = get_field('amount', $post_id);
+        if ($amount) {
+            echo '$' . number_format($amount, 2);
+        }
+    } elseif ($column === 'direction') {
+        echo get_field('direction', $post_id);
+    }
+}
