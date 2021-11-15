@@ -167,13 +167,21 @@ function fireplace_private_post_types($post)
     return $post;
 }
 
-function fireplace_constrainedWidthPage($title, $contentFunction, $afterFunction = null)
+function fireplace_constrainedWidthPage(
+    $title,
+    $contentFunction,
+    $afterFunction = null,
+    $description = '')
 {
     get_header();
     ?>
     <main id="primary" class="site-main padding-2">
     <?php if ($title) : ?>
         <h1 class="pageTitle"><?php echo $title; ?></h1>
+        <?php if ($description) : ?>
+            <p><?php echo $description ?></p>
+        <?php endif; ?>
+        <hr>
     <?php endif; ?>
     <div class="constrained-width">
         <?php call_user_func($contentFunction); ?>
