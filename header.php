@@ -76,15 +76,12 @@ $highlightColor = get_theme_mod('fireplace_highlight_color', '#3582c4');
 			<?php endif; ?>
 		</div><!-- .site-branding -->
 
-		<nav id="site-navigation" class="main-navigation">
-			<button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false"><?php esc_html_e( 'Primary Menu', 'fireplace' ); ?></button>
+		<nav id="site-navigation" class="mainNav">
 			<?php
-			wp_nav_menu(
-				array(
-					'theme_location' => 'menu-1',
-					'menu_id'        => 'primary-menu',
-				)
-			);
+			wp_nav_menu([
+				'theme_location' => 'menu-1',
+				'menu_class' => 'list-style-none margin-none padding-none flex',
+			]);
 			?>
 		</nav><!-- #site-navigation -->
 	</header>
