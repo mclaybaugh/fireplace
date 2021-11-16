@@ -943,11 +943,11 @@ body {
 h1,h2,h3,h4,h5,h6,
 .site-title {
 	font-family: var(--heading-font);
-	font-weight: 600;
+	font-weight: 400;
 }
 
 h1.pageTitle {
-	font-size: 3rem;
+	font-size: 5rem;
 	text-align: center;
 }
 
@@ -982,7 +982,7 @@ input[type="submit"] {
 }
 
 div.site-title a {
-	font-size: 2em;
+	font-size: 2rem;
 }
 
 div.site-title {
@@ -1016,4 +1016,8 @@ div.site-title {
 
 .padding-none {
 	padding: 0;
+}
+
+.text-small {
+	font-size: .9rem;
 }

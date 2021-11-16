@@ -78,8 +78,13 @@ $highlightColor = get_theme_mod('fireplace_highlight_color', '#3582c4');
 
 		<nav id="site-navigation" class="mainNav">
 			<?php
+			if (current_user_can('administrator')) {
+				$themeLocation = 'logged-in-nav';
+			} else {
+				$themeLocation = 'public-nav';
+			}
 			wp_nav_menu([
-				'theme_location' => 'menu-1',
+				'theme_location' => $themeLocation,
 				'menu_class' => 'list-style-none margin-none padding-none flex',
 			]);
 			?>
