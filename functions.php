@@ -149,6 +149,8 @@ require $templateDir . '/post-types/transaction.php';
 require $templateDir . '/shortcodes/transaction-calendar.php';
 require $templateDir . '/shortcodes/transaction-template.php';
 
+
+
 /**
  * For private post types, prevent the "publish" status on save.
  */
@@ -166,6 +168,46 @@ function fireplace_private_post_types($post)
         $post['post_status'] = 'private';
     }
     return $post;
+}
+
+add_action('wp_head', 'fireplace_outputInlineStyle');
+function fireplace_outputInlineStyle()
+{
+    $fontImportUrl = get_theme_mod('fireplace_font_import_url', '');
+    $bodyFont = get_theme_mod('fireplace_body_font', '');
+    $headingFont = get_theme_mod('fireplace_heading_font', '');
+    $backgroundColor = get_theme_mod('fireplace_background_color', '#ffffff');
+    $textColor = get_theme_mod('fireplace_text_color', '#404040');
+    $highlightColor = get_theme_mod('fireplace_highlight_color', '#3582c4');
+    ?>
+    <style>
+    <?php if ($fontImportUrl) : ?>
+    @import url('<?php echo $fontImportUrl; ?>');
+    <?php endif; ?>
+
+    :root {
+        <?php if ($bodyFont) : ?>
+        --body-font: <?php echo $bodyFont; ?>;
+        <?php endif; ?>
+
+        <?php if ($headingFont) : ?>
+        --heading-font: <?php echo $headingFont; ?>;
+        <?php endif; ?>
+
+        <?php if ($backgroundColor) : ?>
+        --background-color: <?php echo $backgroundColor; ?>;
+        <?php endif; ?>
+
+        <?php if ($textColor) : ?>
+        --text-color: <?php echo $textColor; ?>;
+        <?php endif; ?>
+
+        <?php if ($highlightColor) : ?>
+        --highlight-color: <?php echo $highlightColor; ?>;
+        <?php endif; ?>
+    }
+    </style>
+    <?php
 }
 
 function fireplace_constrainedWidthPage(
