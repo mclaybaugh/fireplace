@@ -146,6 +146,8 @@ require $templateDir . '/post-types/idea.php';
 require $templateDir . '/post-types/task.php';
 require $templateDir . '/post-types/journal.php';
 require $templateDir . '/post-types/transaction.php';
+require $templateDir . '/shortcodes/transaction-calendar.php';
+require $templateDir . '/shortcodes/transaction-template.php';
 
 /**
  * For private post types, prevent the "publish" status on save.
