@@ -947,8 +947,14 @@ h1,h2,h3,h4,h5,h6,
 }
 
 h1.pageTitle {
-	font-size: 5rem;
+	font-size: 2rem;
 	text-align: center;
+}
+
+@media (min-width: 768px) {
+	h1.pageTitle {
+		font-size: 5rem;
+	}
 }
 
 a,
@@ -1000,6 +1006,10 @@ div.site-title {
 
 .justify-space-between {
 	justify-content: space-between;
+}
+
+.flex-wrap {
+	flex-wrap: wrap;
 }
 
 .list-style-none {

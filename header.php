@@ -49,7 +49,7 @@
 		}
 		wp_nav_menu([
 			'theme_location' => $themeLocation,
-			'menu_class' => 'list-style-none margin-none padding-none flex',
+			'menu_class' => 'list-style-none margin-none padding-none flex flex-wrap',
 		]);
 		?>
 	</nav><!-- #site-navigation -->
