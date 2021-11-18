@@ -958,7 +958,8 @@ a:active {
 	text-decoration: underline;
 }
 
-a:hover {
+a:hover,
+a:focus {
 	color: inherit;
 	text-decoration-style: dotted;
 }
