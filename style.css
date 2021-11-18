@@ -1021,3 +1021,13 @@ div.site-title {
 .text-small {
 	font-size: .9rem;
 }
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+th, td {
+	border: 1px solid var(--text-color);
+	padding: .5rem 1rem;
+}

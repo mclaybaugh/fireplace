@@ -15,29 +15,108 @@ function fireplace_transactionTemplate($atts)
         ], $atts
     );
 
-    // get all cats
+    if (!function_exists('get_field')) {
+        return;
+    }
+
     $categories = get_terms([
         'taxonomy' => 'transaction_category',
         'hide_empty' => false,
     ]);
-    print_r($categories);
-    // foreach cat, get template transactions sorted by date of month
-    // calculate summary table
+    $categoryTables = [];
+    $income = 0;
+    $expenses = 0;
+    $netIncome = 0;
+    foreach ($categories as $cat) {
+        $table = [
+            'name' => $cat->name,
+            'rows' => [],
+        ];
+        $args = [
+            'post_type' => 'transaction',
+            'posts_per_page' => -1,
+            'tax_query' => [[
+                'taxonomy' => 'transaction_category',
+                'field' => 'term_id',
+                'terms' => $cat->term_id,
+            ]],
+            'meta_query' => [[
+                'field' => 'is_template_transaction',
+                'compare' => '=',
+                'value' => 1,
+            ]],
+        ];
+        $query = new WP_Query($args);
+        if ($query->have_posts()) {
+            $total = 0;
+            while ($query->have_posts()) {
+                $query->the_post();
+                $description = str_replace('Private: ', '', get_the_title());
+                $date = get_field('datetime', null, false);
+                $amount = get_field('amount');
+                $total += $amount;
+                $table['rows'][] = [$description, $date, $amount];
+            }
+            $table['total'] = $total;
+            if ($cat->slug === 'income') {
+                $income += $total;
+            } else {
+                $expenses += $total;
+            }
+            wp_reset_postdata();
+        }
+        $categoryTables[] = $table;
+    }
+    $netIncome = $income - $expenses;
+    $summaryRows = [
+        ['Income', $income],
+        ['Expenses', $expenses],
+        ['Net Income', $netIncome],
+    ];
+
+    // View
     ?>
+    <?php foreach ($categoryTables as $table) : ?>
+    <h2><?php echo $table['name']; ?></h2>
     <table>
         <thead>
-            <th>Date</th>
-            <th>Amount</th>
-            <th>Balance</th>
             <th>Description</th>
+            <th>Day of Month</th>
+            <th>Amount</th>
         </thead>
         <tbody>
+        <?php foreach ($table['rows'] as $row) : ?>
             <tr>
-                <td>2021-11-15</td>
-                <td>-130.00</td>
-                <td>900.00</td>
-                <td>Did a thing</td>
+            <?php foreach ($row as $data) : ?>
+                <td><?php echo $data; ?></td>
+            <?php endforeach; ?>
             </tr>
+        <?php endforeach; ?>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>Total</td>
+                <td></td>
+                <td><?php echo $table['total']; ?></td>
+            </tr>
+        </tfoot>
+    </table>
+    <?php endforeach; ?>
+
+    <h2>Summary</h2>
+    <table>
+        <thead>
+            <th>Description</th>
+            <th>Amount</th>
+        </thead>
+        <tbody>
+        <?php foreach ($summaryRows as $row) : ?>
+            <tr>
+            <?php foreach ($row as $data) : ?>
+                <td><?php echo $data; ?></td>
+            <?php endforeach; ?>
+            </tr>
+        <?php endforeach; ?>
         </tbody>
     </table>
     <?php
