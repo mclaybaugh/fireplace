@@ -8,12 +8,12 @@ add_shortcode('transaction-template', 'fireplace_transactionTemplate');
 
 function fireplace_transactionTemplate($atts)
 {
-    $atts = array_change_key_case((array) $atts, CASE_LOWER);
-    $atts = shortcode_atts(
-        [
-            'title' => '',
-        ], $atts
-    );
+    // $atts = array_change_key_case((array) $atts, CASE_LOWER);
+    // $atts = shortcode_atts(
+    //     [
+    //         'title' => '',
+    //     ], $atts
+    // );
 
     if (!function_exists('get_field')) {
         return;
@@ -51,8 +51,11 @@ function fireplace_transactionTemplate($atts)
             $total = 0;
             while ($query->have_posts()) {
                 $query->the_post();
-                $description = str_replace('Private: ', '', get_the_title());
+                $title = str_replace('Private: ', '', get_the_title());
+                $editLink = get_edit_post_link();
+                $description = '<a href="' . $editLink . '">' . $title . '</a>';
                 $date = get_field('datetime', null, false);
+                $date = date('j', strtotime($date));
                 $amount = get_field('amount');
                 $total += $amount;
                 $table['rows'][] = [$description, $date, $amount];
