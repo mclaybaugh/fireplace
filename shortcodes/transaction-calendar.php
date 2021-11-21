@@ -8,26 +8,50 @@ add_shortcode('transaction-calendar', 'fireplace_transactionCalendar');
 
 function fireplace_transactionCalendar($atts)
 {
-    // $atts = array_change_key_case((array) $atts, CASE_LOWER);
-    // $atts = shortcode_atts(
-    //     [
-    //         'title' => '',
-    //     ], $atts
-    // );
+    $atts = array_change_key_case((array) $atts, CASE_LOWER);
+    $atts = shortcode_atts(
+        [
+            'interval' => '40',
+        ], $atts
+    );
 
     if (!function_exists('get_field')) {
         return;
     }
 
-    $startDate = date('Y-m-01 00:00:00');
+    // start date from URL or default
+    if (array_key_exists('startYear', $_GET)
+    && array_key_exists('startMonth', $_GET)) {
+        $startYear = $_GET['startYear'];
+        $startMonth = $_GET['startMonth'];
+        $startDate = "$startYear-$startMonth-01 00:00:00";
+    } else {
+        $startDate = date('Y-m-01 00:00:00');
+    }
     $startTime = strtotime($startDate);
-    $endTime = strtotime('+60 days', $startTime);
-    $endDate = date('Y-m-d 00:00:00', $endTime);
+
+    // end date from URL or default
+    if (array_key_exists('endYear', $_GET)
+    && array_key_exists('endMonth', $_GET)) {
+        $endYear = $_GET['endYear'];
+        $endMonth = $_GET['endMonth'];
+        $monthStart = strtotime("$endYear-$endMonth-01 00:00:00");
+        $numDays = date('t', $monthStart);
+        $endDate = "$endYear-$endMonth-$numDays 00:00:00";
+    } else {
+        $nextMonth = strtotime('+' . $atts['interval'] . ' days', $startTime);
+        $endDate = date('Y-m-t 00:00:00', $nextMonth);
+    }
+    $endTime = strtotime($endDate);
+
+    // declare variables
     $balance = 0;
     $transactionRows = [];
     $isFirst = true;
     $previousDay = false;
     $previousTimestamp = false;
+
+    // run query
     $args = [
         'post_type' => 'transaction',
         'posts_per_page' => -1,
@@ -136,6 +160,18 @@ function fireplace_transactionCalendar($atts)
 
     ob_start();
     ?>
+    <h2><?php echo date('F Y', $startTime); ?>
+    to <?php echo date('F Y', $endTime); ?></h2>
+    <?php
+    $previousTime = strtotime('-' . $atts['interval'] . ' days', $startTime);
+    $pYear = date('Y', $previousTime);
+    $pMonth = date('m', $previousTime);
+    $nextTime = strtotime('+1 days', $endTime);
+    $nYear = date('Y', $nextTime);
+    $nMonth = date('m', $nextTime);
+    ?>
+    <a href="?startYear=<?php echo $pYear; ?>&startMonth=<?php echo $pMonth; ?>">Next period</a>
+    <a href="?startYear=<?php echo $nYear; ?>&startMonth=<?php echo $nMonth; ?>">Previous period</a>
     <table>
         <thead>
             <th>Date</th>
