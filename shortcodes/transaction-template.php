@@ -41,8 +41,7 @@ function fireplace_transactionTemplate($atts)
                 'terms' => $cat->term_id,
             ]],
             'meta_query' => [[
-                'field' => 'is_template_transaction',
-                'compare' => '=',
+                'key' => 'is_template_transaction',
                 'value' => 1,
             ]],
         ];

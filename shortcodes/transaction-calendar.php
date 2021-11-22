@@ -59,12 +59,11 @@ function fireplace_transactionCalendar($atts)
         'orderby' => 'meta_value_datetime',
         'order' => 'ASC',
         'meta_query' => [[
-            'field' => 'is_template_transaction',
-            'compare' => '=',
+            'key' => 'is_template_transaction',
             'value' => 0,
         ],[
-            'field' => 'datetime',
-            'compare' => '<',
+            'key' => 'datetime',
+            'compare' => '<=',
             'value' => $endDate,
             'type' => 'DATETIME',
         ]],
@@ -78,6 +77,8 @@ function fireplace_transactionCalendar($atts)
 
             // if in range, get details
             $date = get_field('datetime', null, false);
+            print_r($date);
+
             $timestamp = strtotime($date);
             if ($timestamp >= $startTime
             && $timestamp <= $endTime) {
@@ -148,13 +149,18 @@ function fireplace_transactionCalendar($atts)
         $lastDayOfMonth = date('j', $endTime);
         $dayDiff = $lastDayOfMonth - $previousDay;
         if ($dayDiff > 1) {
+            if ($previousTimestamp) {
+                $startFill = strtotime('+1 day', $previousTimestamp);
+            } else {
+                $startFill = $startTime;
+            }
             $transactionRows = addMissingDays(
                 $transactionRows,
                 $balance,
-                strtotime('+1 day', $previousTimestamp),
+                $startFill,
                 $endTime
             );
-        }
+        } 
         wp_reset_postdata();
     }
 
@@ -170,8 +176,41 @@ function fireplace_transactionCalendar($atts)
     $nYear = date('Y', $nextTime);
     $nMonth = date('m', $nextTime);
     ?>
-    <a href="?startYear=<?php echo $pYear; ?>&startMonth=<?php echo $pMonth; ?>">Next period</a>
-    <a href="?startYear=<?php echo $nYear; ?>&startMonth=<?php echo $nMonth; ?>">Previous period</a>
+    <a class="btn" href="?startYear=<?php echo $pYear; ?>&startMonth=<?php echo $pMonth; ?>">Previous period</a>
+    <a class="btn" href="?startYear=<?php echo $nYear; ?>&startMonth=<?php echo $nMonth; ?>">Next period</a>
+    <form method="get">
+        <input type="number" maxlength="4" name="startYear" required="required">
+        <select name="startMonth" required="required">
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+        </select>
+        <input type="number" maxlength="4" name="endYear" required="required">
+        <select name="endMonth" required="required">
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+        </select>
+        <input type="submit" value="submit">
+    </form>
     <table>
         <thead>
             <th>Date</th>
