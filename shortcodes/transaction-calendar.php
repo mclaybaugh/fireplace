@@ -19,6 +19,11 @@ function fireplace_transactionCalendar($atts)
         return;
     }
 
+    if (array_key_exists('actualBalance', $_POST)
+    && wp_verify_nonce($_POST['updateTodaysBalance'], 'updateTodaysBalance')) {
+        // @TODO add update transaction
+    }
+
     // start date from URL or default
     if (array_key_exists('startYear', $_GET)
     && array_key_exists('startMonth', $_GET)) {
@@ -83,8 +88,6 @@ function fireplace_transactionCalendar($atts)
 
             // if in range, get details
             $date = get_field('datetime', null, false);
-            print_r($date);
-
             $timestamp = strtotime($date);
             if ($timestamp >= $startTime
             && $timestamp <= $endTime) {
@@ -166,8 +169,17 @@ function fireplace_transactionCalendar($atts)
                 $startFill,
                 $endTime
             );
-        } 
+        }
         wp_reset_postdata();
+    }
+
+    // Get today's balance
+    $today = date('Y-m-d');
+    $todayBalance = false;
+    foreach ($transactionRows as $row) {
+        if ($row[0] === $today) {
+            $todayBalance = $row[2];
+        }
     }
 
     // Navigation data
@@ -187,6 +199,23 @@ function fireplace_transactionCalendar($atts)
     <a class="btn" href="?startYear=<?php echo $pYear; ?>&startMonth=<?php echo $pMonth; ?>">Previous period</a>
     <a class="btn" href="?startYear=<?php echo $nYear; ?>&startMonth=<?php echo $nMonth; ?>">Next period</a>
 
+    <?php fireplace_table($tableHeaders, $transactionRows); ?>
+
+    <h2>Actions</h2>
+
+    <?php if ($todayBalance) : ?>
+    <h3>Update Today</h3>
+    <p>Today's expected balance: <?php echo $todayBalance; ?></p>
+    <form method="post">
+        <label>Actual Balance:
+        <?php fireplace_input_number('actualBalance', '0', null, '.01'); ?>
+        </label>
+        <?php fireplace_submit_btn('Update'); ?>
+        <?php wp_nonce_field('updateTodaysBalance', 'updateTodaysBalance') ?>
+    </form>
+    <?php endif; ?>
+
+    <h3>Custom Range</h3>
     <form method="get">
         <?php fireplace_input_number_year('startYear'); ?>
         <?php fireplace_select_month('startMonth'); ?>
@@ -195,7 +224,8 @@ function fireplace_transactionCalendar($atts)
         <?php fireplace_submit_btn(); ?>
     </form>
 
-    <?php fireplace_table($tableHeaders, $transactionRows); ?>
+    <h3>Generate Transactions From Template</h3>
+
     <?php
     $content = ob_get_clean();
     return $content;
