@@ -46,6 +46,12 @@ function fireplace_transactionCalendar($atts)
 
     // declare variables
     $balance = 0;
+    $tableHeaders = [
+        'Date',
+        'Amount',
+        'Balance',
+        'Description',
+    ];
     $transactionRows = [];
     $isFirst = true;
     $previousDay = false;
@@ -164,70 +170,32 @@ function fireplace_transactionCalendar($atts)
         wp_reset_postdata();
     }
 
-    ob_start();
-    ?>
-    <h2><?php echo date('F Y', $startTime); ?>
-    to <?php echo date('F Y', $endTime); ?></h2>
-    <?php
+    // Navigation data
+    $fStartTime = date('F Y', $startTime);
+    $fEndTime = date('F Y', $endTime);
     $previousTime = strtotime('-' . $atts['interval'] . ' days', $startTime);
     $pYear = date('Y', $previousTime);
     $pMonth = date('m', $previousTime);
     $nextTime = strtotime('+1 days', $endTime);
     $nYear = date('Y', $nextTime);
     $nMonth = date('m', $nextTime);
+
+    ob_start();
     ?>
+    <h2><?php echo $fStartTime; ?> to <?php echo $fEndTime; ?></h2>
+
     <a class="btn" href="?startYear=<?php echo $pYear; ?>&startMonth=<?php echo $pMonth; ?>">Previous period</a>
     <a class="btn" href="?startYear=<?php echo $nYear; ?>&startMonth=<?php echo $nMonth; ?>">Next period</a>
+
     <form method="get">
-        <input type="number" maxlength="4" name="startYear" required="required">
-        <select name="startMonth" required="required">
-            <option value="01">January</option>
-            <option value="02">February</option>
-            <option value="03">March</option>
-            <option value="04">April</option>
-            <option value="05">May</option>
-            <option value="06">June</option>
-            <option value="07">July</option>
-            <option value="08">August</option>
-            <option value="09">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-        </select>
-        <input type="number" maxlength="4" name="endYear" required="required">
-        <select name="endMonth" required="required">
-            <option value="01">January</option>
-            <option value="02">February</option>
-            <option value="03">March</option>
-            <option value="04">April</option>
-            <option value="05">May</option>
-            <option value="06">June</option>
-            <option value="07">July</option>
-            <option value="08">August</option>
-            <option value="09">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-        </select>
-        <input type="submit" value="submit">
+        <?php fireplace_input_number_year('startYear'); ?>
+        <?php fireplace_select_month('startMonth'); ?>
+        <?php fireplace_input_number_year('endYear'); ?>
+        <?php fireplace_select_month('endMonth'); ?>
+        <?php fireplace_submit_btn(); ?>
     </form>
-    <table>
-        <thead>
-            <th>Date</th>
-            <th>Amount</th>
-            <th>Balance</th>
-            <th>Description</th>
-        </thead>
-        <tbody>
-        <?php foreach ($transactionRows as $row) : ?>
-            <tr>
-            <?php foreach ($row as $item) : ?>
-                <td><?php echo $item; ?></td>
-            <?php endforeach; ?>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
+
+    <?php fireplace_table($tableHeaders, $transactionRows); ?>
     <?php
     $content = ob_get_clean();
     return $content;

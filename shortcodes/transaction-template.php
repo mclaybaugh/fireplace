@@ -60,6 +60,11 @@ function fireplace_transactionTemplate($atts)
                 $table['rows'][] = [$description, $date, $amount];
             }
             $table['total'] = $total;
+            $table['footers'] = [
+                'Total',
+                '',
+                $total,
+            ];
             if ($cat->slug === 'income') {
                 $income += $total;
             } else {
@@ -70,56 +75,30 @@ function fireplace_transactionTemplate($atts)
         $categoryTables[] = $table;
     }
     $netIncome = $income - $expenses;
+    $summaryHeaders = [
+        'Description',
+        'Amount',
+    ];
     $summaryRows = [
         ['Income', $income],
         ['Expenses', $expenses],
         ['Net Income', $netIncome],
     ];
 
+    $categoryTableHeaders = [
+        'Description',
+        'Day of Month',
+        'Amount',
+    ];
+
     // View
     ?>
     <?php foreach ($categoryTables as $table) : ?>
     <h2><?php echo $table['name']; ?></h2>
-    <table>
-        <thead>
-            <th>Description</th>
-            <th>Day of Month</th>
-            <th>Amount</th>
-        </thead>
-        <tbody>
-        <?php foreach ($table['rows'] as $row) : ?>
-            <tr>
-            <?php foreach ($row as $data) : ?>
-                <td><?php echo $data; ?></td>
-            <?php endforeach; ?>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td>Total</td>
-                <td></td>
-                <td><?php echo $table['total']; ?></td>
-            </tr>
-        </tfoot>
-    </table>
+    <?php fireplace_table($categoryTableHeaders, $table['rows'], $table['footers']); ?>
     <?php endforeach; ?>
 
     <h2>Summary</h2>
-    <table>
-        <thead>
-            <th>Description</th>
-            <th>Amount</th>
-        </thead>
-        <tbody>
-        <?php foreach ($summaryRows as $row) : ?>
-            <tr>
-            <?php foreach ($row as $data) : ?>
-                <td><?php echo $data; ?></td>
-            <?php endforeach; ?>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
+    <?php fireplace_table($summaryHeaders, $summaryRows); ?>
     <?php
 }

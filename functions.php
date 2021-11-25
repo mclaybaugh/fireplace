@@ -148,6 +148,13 @@ require $templateDir . '/post-types/journal.php';
 require $templateDir . '/post-types/transaction.php';
 require $templateDir . '/shortcodes/transaction-calendar.php';
 require $templateDir . '/shortcodes/transaction-template.php';
+require $templateDir . '/components/input-number.php';
+require $templateDir . '/components/input-number-year.php';
+require $templateDir . '/components/link.php';
+require $templateDir . '/components/select.php';
+require $templateDir . '/components/select-month.php';
+require $templateDir . '/components/submit.php';
+require $templateDir . '/components/table.php';
 
 
 
