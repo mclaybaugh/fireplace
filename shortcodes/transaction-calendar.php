@@ -328,7 +328,42 @@ function fireplace_update_balance($actual, $expected, $updateDate)
 
 function fireplace_generate_transactions($year, $month)
 {
-    // @TODO
     // get all template transactions
-    // foreach, add transaction with this month and year
+    $args = [
+        'post_type' => 'transaction',
+        'posts_per_page' => -1,
+        'meta_query' => [[
+            'key' => 'is_template_transaction',
+            'value' => 1,
+        ]],
+    ];
+    $query = new WP_Query($args);
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            // foreach, add transaction with this month and year
+            $query->the_post();
+            $postId = get_the_ID();
+            $title = str_replace('Private: ', '', get_the_title());
+            $date = get_field('datetime', null, false);
+            $dateTail = date('d H:i:s', strtotime($date));
+            $newDate = "$year-$month-$dateTail";
+            $amount = get_field('amount');
+            $direction = get_field('direction');
+            $cats = get_the_terms($postId, 'transaction_category');
+            $cats = array_map(function ($term) {
+                return $term->term_id;
+            }, $cats);
+
+            $transactionDetails = [
+                'title' => $title,
+                'datetime' => $newDate,
+                'amount' => $amount,
+                'direction' => $direction,
+                'cats' => $cats,
+                'is_template_transaction' => 0,
+            ];
+            $postId = fireplace_add_transaction($transactionDetails);
+        }
+        wp_reset_postdata();
+    }
 }
