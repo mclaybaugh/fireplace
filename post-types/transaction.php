@@ -211,6 +211,7 @@ add_filter(
 function fireplace_transaction_admin_columns($columns)
 {
     unset($columns['date']);
+    $columns['template'] = 'Is Template';
     $columns['transaction_date'] = "Transaction Date";
     $columns['amount'] = "Amount";
     $columns['direction'] = "Direction";
@@ -238,6 +239,8 @@ function fireplace_transaction_column_data($column, $post_id)
         }
     } elseif ($column === 'direction') {
         echo get_field('direction', $post_id);
+    } elseif ($column === 'template') {
+        echo get_field('is_template_transaction', $post_id) ? 'template': '';
     }
 }
 
