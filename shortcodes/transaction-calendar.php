@@ -89,6 +89,14 @@ function fireplace_transactionCalendar($atts)
             'type' => 'DATETIME',
         ]],
     ];
+
+    // @TODO
+    // dont trust order.
+    // make array of all days
+    // make array of all transactions with details
+    // foreach day, get matching transactions in order
+    // fill in row data
+
     $query = new WP_Query($args);
     // var_dump($query->posts);
     if ($query->have_posts()) {
