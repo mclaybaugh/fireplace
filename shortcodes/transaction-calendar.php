@@ -33,6 +33,7 @@ function fireplace_transactionCalendar($atts)
         fireplace_generate_transactions($_POST['genYear'], $_POST['genMonth']);
     }
 
+    $currentDatetime = current_datetime();
     // start date from URL or default
     if (array_key_exists('startYear', $_GET)
     && array_key_exists('startMonth', $_GET)) {
@@ -40,7 +41,6 @@ function fireplace_transactionCalendar($atts)
         $startMonth = $_GET['startMonth'];
         $startDate = "$startYear-$startMonth-01 00:00:00";
     } else {
-        $currentDatetime = current_datetime();
         $startDate = $currentDatetime->format('Y-m-01 00:00:00');
     }
     $startTime = strtotime($startDate);
