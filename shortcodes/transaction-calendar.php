@@ -69,8 +69,8 @@ function fireplace_transactionCalendar($atts)
     ];
     $transactionRows = [];
     $isFirst = true;
-    $previousDay = false;
     $previousTimestamp = false;
+    $prevYearMonthDay = false;
 
     // run query
     $args = [
@@ -90,107 +90,111 @@ function fireplace_transactionCalendar($atts)
         ]],
     ];
 
-    // @TODO
-    // dont trust order.
-    // make array of all days
-    // make array of all transactions with details
-    // foreach day, get matching transactions in order
-    // fill in row data
-
     $query = new WP_Query($args);
-    // var_dump($query->posts);
-    if ($query->have_posts()) {
-        while ($query->have_posts()) {
-            $query->the_post();
-            $amount = get_field('amount');
-            $direction = get_field('direction');
+    // Add datetime to post fields to avoid repeated calls later.
+    $sortedPosts = array_map(function ($x) {
+        $x->datetime = get_field('datetime', $x->ID);
+        $x->timestamp = strtotime($x->datetime);
+        return $x;
+    }, $query->posts);
 
-            // if in range, get details
-            $date = get_field('datetime', null, false);
-            $timestamp = strtotime($date);
-            if ($timestamp >= $startTime
-            && $timestamp <= $endTime) {
-                $description = str_replace('Private: ', '', get_the_title());
-                $editLink = get_edit_post_link();
-                $dateFormatted = date('Y-m-d', $timestamp);
-                $dayOfMonth = date('j', $timestamp);
-                $lastPrevDay = date('md', $timestamp);
-                $directionSymbol = '-';
-                if ($direction === 'in') {
-                    $directionSymbol = '';
+    // Sort by timestamp, ascending
+    usort($sortedPosts, function ($a, $b) {
+        return $a->timestamp - $b->timestamp;
+    });
+
+    // echo "<pre>";
+    // var_dump($sortedPosts);
+    // echo "</pre>";
+
+    foreach ($sortedPosts as $transaction) {
+        $amount = get_field('amount', $transaction->ID);
+        $direction = get_field('direction', $transaction->ID);
+
+        // if in range, get details
+        $timestamp = $transaction->timestamp;
+        if ($timestamp >= $startTime
+        && $timestamp <= $endTime) {
+            $description = str_replace('Private: ', '', get_the_title($transaction->ID));
+            $editLink = get_edit_post_link($transaction->ID);
+            $dateFormatted = date('Y-m-d', $timestamp);
+            $dayOfMonth = date('j', $timestamp);
+            $yearMonthDay = date('Ymd', $timestamp);
+            $directionSymbol = '-';
+            if ($direction === 'in') {
+                $directionSymbol = '';
+            }
+
+            if ($isFirst) {
+                if ($dayOfMonth > 1) {
+                    $transactionRows = addMissingDays(
+                        $transactionRows,
+                        $balance,
+                        $startTime,
+                        strtotime('-1 day', $timestamp)
+                    );
                 }
+                $isFirst = false;
+            }
 
-                if ($isFirst) {
-                    if ($dayOfMonth > 1) {
-                        $transactionRows = addMissingDays(
-                            $transactionRows,
-                            $balance,
-                            $startTime,
-                            strtotime('-1 day', $timestamp)
-                        );
-                    }
-                    $isFirst = false;
-                }
-
-                // if days before this one, add them
-                if ($previousDay) {
-                    $dayDiff = $dayOfMonth - $previousDay;
-                    if ($dayDiff > 1) {
-                        $transactionRows = addMissingDays(
-                            $transactionRows,
-                            $balance,
-                            strtotime('+1 day', $previousTimestamp),
-                            strtotime('-1 day', $timestamp)
-                        );
-                    }
-                }
-
-                // don't show date if repeat
-                if ($previousDay === $dayOfMonth) {
-                    $dateFormatted = '';
-                }
-                $previousDay = $dayOfMonth;
-                $previousTimestamp = $timestamp;
-
-                // Update balance
-                if ($direction === 'in') {
-                    $balance += $amount;
-                } else {
-                    $balance -= $amount;
-                }
-
-                $transactionRows[] = [
-                    $dateFormatted,
-                    $directionSymbol . $amount,
-                    $balance,
-                    "<a href=\"$editLink\">$description</a>",
-                ];
-            } else {
-                // Update balance
-                if ($direction === 'in') {
-                    $balance += $amount;
-                } else {
-                    $balance -= $amount;
+            // if days before this one, add them
+            if ($prevYearMonthDay) {
+                $dayDiff = $yearMonthDay - $prevYearMonthDay;
+                if ($dayDiff > 1) {
+                    $transactionRows = addMissingDays(
+                        $transactionRows,
+                        $balance,
+                        strtotime('+1 day', $previousTimestamp),
+                        strtotime('-1 day', $timestamp)
+                    );
                 }
             }
-        }
-        // if last transaction not on last day of month, postfill days
-        $lastDayOfMonth = date('md', $endTime);
-        $dayDiff = $lastDayOfMonth - $lastPrevDay;
-        if ($dayDiff > 1) {
-            if ($previousTimestamp) {
-                $startFill = strtotime('+1 day', $previousTimestamp);
-            } else {
-                $startFill = $startTime;
+
+            // don't show date if repeat
+            if ($prevYearMonthDay === $yearMonthDay) {
+                $dateFormatted = '';
             }
-            $transactionRows = addMissingDays(
-                $transactionRows,
-                $balance,
-                $startFill,
-                $endTime
-            );
+            $previousTimestamp = $timestamp;
+            $prevYearMonthDay = date('Ymd', $timestamp);
+
+            // Update balance
+            if ($direction === 'in') {
+                $balance += $amount;
+            } else {
+                $balance -= $amount;
+            }
+
+            $transactionRows[] = [
+                $dateFormatted,
+                $directionSymbol . $amount,
+                fireplace_format_currency($balance),
+                "<a href=\"$editLink\">$description</a>",
+            ];
+        } else {
+            // Update balance
+            if ($direction === 'in') {
+                $balance += $amount;
+            } else {
+                $balance -= $amount;
+            }
         }
-        wp_reset_postdata();
+    }
+
+    // if last transaction not on last day of month, postfill days
+    $lastDayOfMonth = date('Ymt', $endTime);
+    $dayDiff = $lastDayOfMonth - $prevYearMonthDay;
+    if ($dayDiff > 1) {
+        if ($previousTimestamp) {
+            $startFill = strtotime('+1 day', $previousTimestamp);
+        } else {
+            $startFill = $startTime;
+        }
+        $transactionRows = addMissingDays(
+            $transactionRows,
+            $balance,
+            $startFill,
+            $endTime
+        );
     }
 
     // Get today's balance
@@ -198,7 +202,7 @@ function fireplace_transactionCalendar($atts)
     $todayBalance = false;
     foreach ($transactionRows as $row) {
         if ($row[0] === $today) {
-            $todayBalance = $row[2];
+            $todayBalance = str_replace('$', '', $row[2]);
         }
     }
 
@@ -229,7 +233,7 @@ function fireplace_transactionCalendar($atts)
 
     <?php if ($todayBalance) : ?>
     <h3>Update Today</h3>
-    <p>Today's expected balance: <?php echo $todayBalance; ?></p>
+    <p>Today's expected balance: <?php echo fireplace_format_currency($todayBalance); ?></p>
     <form method="post">
         <?php fireplace_input_number('Actual Balance', 'actualBalance', '0', null, '.01'); ?>
         <?php fireplace_submit_btn('Update'); ?>
@@ -295,12 +299,16 @@ function fireplace_getBalanceUpTo($date)
 
 function addMissingDays($transactionRows, $balance, $startTime, $endTime)
 {
+    // echo "<pre>";
+    // var_dump(date('Y-m-d', $startTime));
+    // var_dump(date('Y-m-d', $endTime));
+    // echo "</pre>";
     $endDate = date('Y-m-d', strtotime('+1 day', $endTime));
     for ($time = $startTime; date('Y-m-d', $time) !== $endDate; $time = strtotime('+1 day', $time)) {
         $transactionRows[] = [
             date('Y-m-d', $time),
             '-',
-            $balance,
+            fireplace_format_currency($balance),
             '-',
         ];
     }
@@ -374,4 +382,9 @@ function fireplace_generate_transactions($year, $month)
         }
         wp_reset_postdata();
     }
+}
+
+function fireplace_format_currency($x)
+{
+    return '$' . number_format($x);
 }

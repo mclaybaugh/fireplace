@@ -92,6 +92,7 @@ function fireplace_transactionTemplate($atts)
     ];
 
     // View
+    ob_start();
     ?>
     <?php foreach ($categoryTables as $table) : ?>
     <h2><?php echo $table['name']; ?></h2>
@@ -101,4 +102,6 @@ function fireplace_transactionTemplate($atts)
     <h2>Summary</h2>
     <?php fireplace_table($summaryHeaders, $summaryRows); ?>
     <?php
+    $content = ob_get_clean();
+    return $content;
 }
