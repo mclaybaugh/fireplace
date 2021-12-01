@@ -235,9 +235,7 @@ function fireplace_transactionCalendar($atts)
     <h3>Update Today</h3>
     <p>Today's expected balance: <?php echo $todayBalance; ?></p>
     <form method="post">
-        <label>Actual Balance:
-        <?php fireplace_input_number('actualBalance', '0', null, '.01'); ?>
-        </label>
+        <?php fireplace_input_number('Actual Balance', 'actualBalance', '0', null, '.01'); ?>
         <?php fireplace_submit_btn('Update'); ?>
         <input type="hidden" name="expectedBalance"
         value="<?php echo $todayBalance; ?>">
@@ -249,14 +247,20 @@ function fireplace_transactionCalendar($atts)
 
     <h3>Custom Range</h3>
     <form method="get">
-        <?php fireplace_input_number_year('startYear'); ?>
-        <?php fireplace_select_month('startMonth'); ?>
-        <?php fireplace_input_number_year('endYear'); ?>
-        <?php fireplace_select_month('endMonth'); ?>
+        <?php fireplace_input_number_year('Start Year', 'startYear'); ?>
+        <?php fireplace_select_month('Start Month', 'startMonth'); ?>
+        <?php fireplace_input_number_year('End Year', 'endYear'); ?>
+        <?php fireplace_select_month('End Month', 'endMonth'); ?>
         <?php fireplace_submit_btn(); ?>
     </form>
 
     <h3>Generate Transactions From Template</h3>
+    <form method="post">
+        <?php fireplace_input_number_year('Year', 'genYear'); ?>
+        <?php fireplace_select_month('Month', 'genMonth'); ?>
+        <?php fireplace_submit_btn('Generate'); ?>
+        <?php wp_nonce_field('generateTransactions', 'generateTransactions') ?>
+    </form>
 
     <?php
     $content = ob_get_clean();

@@ -1,6 +1,6 @@
 <?php
 
-function fireplace_select_month($name, $isRequired = true)
+function fireplace_select_month($label, $name, $isRequired = true)
 {
     $monthOptions = [
         '01' => 'January',
@@ -16,5 +16,5 @@ function fireplace_select_month($name, $isRequired = true)
         '11' => 'November',
         '12' => 'December',
     ];
-    fireplace_select($name, $monthOptions, $isRequired);
+    fireplace_select($label, $name, $monthOptions, $isRequired);
 }
