@@ -383,8 +383,3 @@ function fireplace_generate_transactions($year, $month)
         wp_reset_postdata();
     }
 }
-
-function fireplace_format_currency($x)
-{
-    return '$' . number_format($x);
-}

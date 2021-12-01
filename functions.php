@@ -244,3 +244,8 @@ function fireplace_constrainedWidthPage(
     get_sidebar();
     get_footer();
 }
+
+function fireplace_format_currency($x)
+{
+    return '$' . number_format($x);
+}

@@ -57,13 +57,13 @@ function fireplace_transactionTemplate($atts)
                 $date = date('j', strtotime($date));
                 $amount = get_field('amount');
                 $total += $amount;
-                $table['rows'][] = [$description, $date, $amount];
+                $table['rows'][] = [$description, $date, fireplace_format_currency($amount)];
             }
             $table['total'] = $total;
             $table['footers'] = [
                 'Total',
                 '',
-                $total,
+                fireplace_format_currency($total),
             ];
             if ($cat->slug === 'income') {
                 $income += $total;
@@ -80,9 +80,9 @@ function fireplace_transactionTemplate($atts)
         'Amount',
     ];
     $summaryRows = [
-        ['Income', $income],
-        ['Expenses', $expenses],
-        ['Net Income', $netIncome],
+        ['Income', fireplace_format_currency($income)],
+        ['Expenses', fireplace_format_currency($expenses)],
+        ['Net Income', fireplace_format_currency($netIncome)],
     ];
 
     $categoryTableHeaders = [
