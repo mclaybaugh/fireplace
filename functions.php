@@ -9,7 +9,7 @@
 
 if ( ! defined( 'FIREPLACE_VERSION' ) ) {
     // Replace the version number of the theme on each release.
-    define( 'FIREPLACE_VERSION', '1.0.3' );
+    define( 'FIREPLACE_VERSION', '1.1.0' );
 }
 
 if ( ! function_exists( 'fireplace_setup' ) ) :
