@@ -21,7 +21,28 @@ function fireplace_transactionCalendar($atts)
 
     if (array_key_exists('actualBalance', $_POST)
     && wp_verify_nonce($_POST['updateTodaysBalance'], 'updateTodaysBalance')) {
-        // @TODO add update transaction
+        $amount = $_POST['actualBalance'] - $_POST['expectedBalance'];
+        if ($amount > 0) {
+            $direction = 'in';
+            $cats = ['income'];
+        } else {
+            $direction = 'out';
+            $cats = ['variable'];
+        }
+        $transactionDetails = [
+            'title' => 'Updated Today',
+            'datetime' => $_POST['updateDate'],
+            'amount' => abs($amount),
+            'direction' => $direction,
+            'cats' => $cats,
+            'is_template_transaction' => 0,
+        ];
+        $postId = fireplace_add_transaction($transactionDetails);
+        if ($postId) {
+            $addStatusMessage = 'Update transaction added successfully.';
+        } else {
+            $addStatusMessage = 'Update transaction failed.';
+        }
     }
 
     // start date from URL or default
@@ -31,7 +52,8 @@ function fireplace_transactionCalendar($atts)
         $startMonth = $_GET['startMonth'];
         $startDate = "$startYear-$startMonth-01 00:00:00";
     } else {
-        $startDate = date('Y-m-01 00:00:00');
+        $currentDatetime = current_datetime();
+        $startDate = $currentDatetime->format('Y-m-01 00:00:00');
     }
     $startTime = strtotime($startDate);
 
@@ -80,6 +102,7 @@ function fireplace_transactionCalendar($atts)
         ]],
     ];
     $query = new WP_Query($args);
+    // var_dump($query->posts);
     if ($query->have_posts()) {
         while ($query->have_posts()) {
             $query->the_post();
@@ -95,6 +118,7 @@ function fireplace_transactionCalendar($atts)
                 $editLink = get_edit_post_link();
                 $dateFormatted = date('Y-m-d', $timestamp);
                 $dayOfMonth = date('j', $timestamp);
+                $lastPrevDay = date('md', $timestamp);
                 $directionSymbol = '-';
                 if ($direction === 'in') {
                     $directionSymbol = '';
@@ -155,8 +179,8 @@ function fireplace_transactionCalendar($atts)
             }
         }
         // if last transaction not on last day of month, postfill days
-        $lastDayOfMonth = date('j', $endTime);
-        $dayDiff = $lastDayOfMonth - $previousDay;
+        $lastDayOfMonth = date('md', $endTime);
+        $dayDiff = $lastDayOfMonth - $lastPrevDay;
         if ($dayDiff > 1) {
             if ($previousTimestamp) {
                 $startFill = strtotime('+1 day', $previousTimestamp);
@@ -174,7 +198,7 @@ function fireplace_transactionCalendar($atts)
     }
 
     // Get today's balance
-    $today = date('Y-m-d');
+    $today = $currentDatetime->format('Y-m-d');
     $todayBalance = false;
     foreach ($transactionRows as $row) {
         if ($row[0] === $today) {
@@ -196,6 +220,10 @@ function fireplace_transactionCalendar($atts)
     ?>
     <h2><?php echo $fStartTime; ?> to <?php echo $fEndTime; ?></h2>
 
+    <?php if ($addStatusMessage) : ?>
+    <p><?php echo $addStatusMessage; ?></p>
+    <?php endif; ?>
+
     <a class="btn" href="?startYear=<?php echo $pYear; ?>&startMonth=<?php echo $pMonth; ?>">Previous period</a>
     <a class="btn" href="?startYear=<?php echo $nYear; ?>&startMonth=<?php echo $nMonth; ?>">Next period</a>
 
@@ -211,6 +239,10 @@ function fireplace_transactionCalendar($atts)
         <?php fireplace_input_number('actualBalance', '0', null, '.01'); ?>
         </label>
         <?php fireplace_submit_btn('Update'); ?>
+        <input type="hidden" name="expectedBalance"
+        value="<?php echo $todayBalance; ?>">
+        <input type="hidden" name="updateDate"
+        value="<?php echo $today; ?> 23:00:00">
         <?php wp_nonce_field('updateTodaysBalance', 'updateTodaysBalance') ?>
     </form>
     <?php endif; ?>

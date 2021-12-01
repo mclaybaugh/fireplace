@@ -240,3 +240,27 @@ function fireplace_transaction_column_data($column, $post_id)
         echo get_field('direction', $post_id);
     }
 }
+
+function fireplace_add_transaction($details)
+{
+    $postId = wp_insert_post([
+        'post_title' => $details['title'],
+        'post_type' => 'transaction',
+        'post_status' => 'private',
+        'tax_input' => [
+            'transaction_category' => $details['cats'],
+        ]
+    ]);
+    if ($postId) {
+        $acfFields = [
+            'datetime',
+            'amount',
+            'direction',
+            'is_template_transaction',
+        ];
+        foreach ($acfFields as $field) {
+            update_field($field, $details[$field], $postId);
+        }
+    }
+    return $postId;
+}
