@@ -21,28 +21,16 @@ function fireplace_transactionCalendar($atts)
 
     if (array_key_exists('actualBalance', $_POST)
     && wp_verify_nonce($_POST['updateTodaysBalance'], 'updateTodaysBalance')) {
-        $amount = $_POST['actualBalance'] - $_POST['expectedBalance'];
-        if ($amount > 0) {
-            $direction = 'in';
-            $cats = ['income'];
-        } else {
-            $direction = 'out';
-            $cats = ['variable'];
-        }
-        $transactionDetails = [
-            'title' => 'Updated Today',
-            'datetime' => $_POST['updateDate'],
-            'amount' => abs($amount),
-            'direction' => $direction,
-            'cats' => $cats,
-            'is_template_transaction' => 0,
-        ];
-        $postId = fireplace_add_transaction($transactionDetails);
-        if ($postId) {
-            $addStatusMessage = 'Update transaction added successfully.';
-        } else {
-            $addStatusMessage = 'Update transaction failed.';
-        }
+        $addStatusMessage = fireplace_update_balance(
+            $_POST['actualBalance'],
+            $_POST['expectedBalance'],
+            $_POST['updateDate']
+        );
+    }
+
+    if (array_key_exists('genYear', $_POST)
+    && wp_verify_nonce($_POST['generateTransactions'], 'generateTransactions')) {
+        fireplace_generate_transactions($_POST['genYear'], $_POST['genMonth']);
     }
 
     // start date from URL or default
@@ -309,4 +297,38 @@ function addMissingDays($transactionRows, $balance, $startTime, $endTime)
         ];
     }
     return $transactionRows;
+}
+
+function fireplace_update_balance($actual, $expected, $updateDate)
+{
+    $amount = $actual - $expected;
+    if ($amount > 0) {
+        $direction = 'in';
+        $cats = ['income'];
+    } else {
+        $direction = 'out';
+        $cats = ['variable'];
+    }
+    $transactionDetails = [
+        'title' => 'Updated Today',
+        'datetime' => $updateDate,
+        'amount' => abs($amount),
+        'direction' => $direction,
+        'cats' => $cats,
+        'is_template_transaction' => 0,
+    ];
+    $postId = fireplace_add_transaction($transactionDetails);
+    if ($postId) {
+        $addStatusMessage = 'Update transaction added successfully.';
+    } else {
+        $addStatusMessage = 'Update transaction failed.';
+    }
+    return $addStatusMessage;
+}
+
+function fireplace_generate_transactions($year, $month)
+{
+    // @TODO
+    // get all template transactions
+    // foreach, add transaction with this month and year
 }
