@@ -224,8 +224,8 @@ function fireplace_transactionCalendar($atts)
     <p><?php echo $addStatusMessage; ?></p>
     <?php endif; ?>
 
-    <a class="btn" href="?startYear=<?php echo $pYear; ?>&startMonth=<?php echo $pMonth; ?>">Previous period</a>
-    <a class="btn" href="?startYear=<?php echo $nYear; ?>&startMonth=<?php echo $nMonth; ?>">Next period</a>
+    <a class="btn" href="?startYear=<?php echo $pYear; ?>&startMonth=<?php echo $pMonth; ?>">Previous</a>
+    <a class="btn" href="?startYear=<?php echo $nYear; ?>&startMonth=<?php echo $nMonth; ?>">Next</a>
 
     <?php fireplace_table($tableHeaders, $transactionRows); ?>
 

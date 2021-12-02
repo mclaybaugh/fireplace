@@ -249,3 +249,20 @@ function fireplace_format_currency($x)
 {
     return '$' . number_format($x);
 }
+
+// add_action('admin_bar_menu', 'fireplace_admin_bar', 500);
+// function fireplace_admin_bar(WP_Admin_Bar $admin_bar) {
+//     if (!current_user_can('manage_options')) {
+//         return;
+//     }
+//     $admin_bar->add_menu([
+//         'id' => 'budget',
+//         'parent' => null,
+//         'group' => null,
+//         'title' => 'Menu Title',
+//         'href' => admin_url('admin.php?page=custom-page'),
+//         'meta' => [
+//             'title' => __( 'Menu Title', 'textdomain' ),
+//         ]
+//     ]);
+// }
