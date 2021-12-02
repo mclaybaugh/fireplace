@@ -1,6 +1,6 @@
 <?php
 
-function fireplace_table($headers, $rows, $footers = null)
+function fireplace_table($headers, $rows, $footers = null, $colClasses = null)
 {
     ?>
     <table>
@@ -12,18 +12,18 @@ function fireplace_table($headers, $rows, $footers = null)
         <tbody>
         <?php foreach ($rows as $row) : ?>
             <tr>
-            <?php foreach ($row as $data) : ?>
-                <td><?php echo $data; ?></td>
-            <?php endforeach; ?>
+            <?php for ($i = 0; $i < count($row); $i++) : ?>
+                <td class="<?php echo $colClasses[$i]; ?>"><?php echo $row[$i]; ?></td>
+            <?php endfor; ?>
             </tr>
         <?php endforeach; ?>
         </tbody>
         <?php if ($footers) : ?>
         <tfoot>
             <tr>
-                <?php foreach ($footers as $footer) : ?>
-                <td><?php echo $footer; ?></td>
-                <?php endforeach; ?>
+            <?php for ($i = 0; $i < count($footers); $i++) : ?>
+                <td class="<?php echo $colClasses[$i]; ?>"><?php echo $footers[$i]; ?></td>
+            <?php endfor; ?>
             </tr>
         </tfoot>
         <?php endif; ?>

@@ -896,7 +896,9 @@ input[type="search"] {
 	border-radius: 0;
 }
 
-input[type="submit"], .fireplace__submit {
+input[type="submit"],
+.fireplace__submit,
+.btn {
 	color: inherit;
 	background-color: inherit;
 	padding: .5rem 1rem;
@@ -904,6 +906,26 @@ input[type="submit"], .fireplace__submit {
 	cursor: pointer;
 	border-radius: 0;
 	border: 1px solid var(--text-color);
+}
+input[type="submit"]:hover,
+input[type="submit"]:focus,
+.fireplace__submit:hover,
+.fireplace__submit:focus,
+.btn:hover,
+.btn:focus {
+	outline-offset: -6px;
+	outline-style: dotted;
+	outline-color: var(--text-color);
+	outline-width: thin;
+}
+
+a.btn {
+	text-decoration: none;
+}
+
+a.btn:hover,
+a.btn:focus {
+	text-decoration: none;
 }
 
 div.site-title a {
@@ -954,11 +976,30 @@ div.site-title {
 table {
 	border-collapse: collapse;
 	width: 100%;
+	width: auto;
+	font-size: .875rem;
+	background-color: rgba(255, 255, 255, 0.05);
 }
 
 th, td {
-	border: 1px solid var(--text-color);
-	padding: .5rem 1rem;
+	border: 0;
+	padding: .25rem 1rem;
+}
+
+.align-right {
+	text-align: right;
+}
+
+.align-center {
+	text-align: center;
+}
+
+th {
+	background: var(--background-color);
+}
+
+tr:nth-of-type(2n) {
+	background: rgba(255, 255, 255, 0.07);
 }
 
 .display-block {
@@ -970,4 +1011,12 @@ th, td {
 	width: 100%;
 	margin: .5rem 0 1rem;
 	padding: .5rem 1rem;
+}
+
+.p1 {
+	padding: 1rem;
+}
+
+.pb1 {
+	padding-bottom: 1rem;
 }

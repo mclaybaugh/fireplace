@@ -71,6 +71,7 @@ function fireplace_transactionCalendar($atts)
     $isFirst = true;
     $previousTimestamp = false;
     $prevYearMonthDay = false;
+    $todaysDate = $currentDatetime->format('Y-m-d');
 
     // run query
     $args = [
@@ -151,8 +152,9 @@ function fireplace_transactionCalendar($atts)
             }
 
             // don't show date if repeat
+            $dateDisplay = $dateFormatted;
             if ($prevYearMonthDay === $yearMonthDay) {
-                $dateFormatted = '';
+                $dateDisplay = '';
             }
             $previousTimestamp = $timestamp;
             $prevYearMonthDay = date('Ymd', $timestamp);
@@ -164,9 +166,13 @@ function fireplace_transactionCalendar($atts)
                 $balance -= $amount;
             }
 
+            if ($dateFormatted === $todaysDate) {
+                $todayBalance = $balance;
+            }
+
             $transactionRows[] = [
-                $dateFormatted,
-                $directionSymbol . $amount,
+                $dateDisplay,
+                $directionSymbol . fireplace_format_currency($amount),
                 fireplace_format_currency($balance),
                 "<a href=\"$editLink\">$description</a>",
             ];
@@ -197,14 +203,12 @@ function fireplace_transactionCalendar($atts)
         );
     }
 
-    // Get today's balance
-    $today = $currentDatetime->format('Y-m-d');
-    $todayBalance = false;
-    foreach ($transactionRows as $row) {
-        if ($row[0] === $today) {
-            $todayBalance = str_replace('$', '', $row[2]);
-        }
-    }
+    $colClasses = [
+        'align-left',
+        'align-right',
+        'align-right',
+        'align-left',
+    ];
 
     // Navigation data
     $fStartTime = date('F Y', $startTime);
@@ -212,9 +216,16 @@ function fireplace_transactionCalendar($atts)
     $previousTime = strtotime('-' . $atts['interval'] . ' days', $startTime);
     $pYear = date('Y', $previousTime);
     $pMonth = date('m', $previousTime);
+    $pFormatted = date('M Y', $previousTime);
     $nextTime = strtotime('+1 days', $endTime);
     $nYear = date('Y', $nextTime);
     $nMonth = date('m', $nextTime);
+    $nFormated = date('M Y', $nextTime);
+
+    $previousHref = "?startYear=$pYear&startMonth=$pMonth";
+    $previousText = "< $pFormatted";
+    $nextHref = "?startYear=$nYear&startMonth=$nMonth";
+    $nextText = "$nFormated >";
 
     ob_start();
     ?>
@@ -224,10 +235,11 @@ function fireplace_transactionCalendar($atts)
     <p><?php echo $addStatusMessage; ?></p>
     <?php endif; ?>
 
-    <a class="btn" href="?startYear=<?php echo $pYear; ?>&startMonth=<?php echo $pMonth; ?>">Previous</a>
-    <a class="btn" href="?startYear=<?php echo $nYear; ?>&startMonth=<?php echo $nMonth; ?>">Next</a>
-
-    <?php fireplace_table($tableHeaders, $transactionRows); ?>
+    <div class="flex justify-space-between flex-wrap pb1">
+        <?php fireplace_link_btn($previousHref, $previousText); ?>
+        <?php fireplace_link_btn($nextHref, $nextText); ?>
+    </div>
+    <?php fireplace_table($tableHeaders, $transactionRows, null, $colClasses); ?>
 
     <h2>Actions</h2>
 
@@ -240,7 +252,7 @@ function fireplace_transactionCalendar($atts)
         <input type="hidden" name="expectedBalance"
         value="<?php echo $todayBalance; ?>">
         <input type="hidden" name="updateDate"
-        value="<?php echo $today; ?> 23:00:00">
+        value="<?php echo $todaysDate; ?> 23:00:00">
         <?php wp_nonce_field('updateTodaysBalance', 'updateTodaysBalance') ?>
     </form>
     <?php endif; ?>
@@ -335,7 +347,7 @@ function fireplace_update_balance($actual, $expected, $updateDate)
     ];
     $postId = fireplace_add_transaction($transactionDetails);
     if ($postId) {
-        $addStatusMessage = 'Update transaction added successfully.';
+        $addStatusMessage = 'Update transaction added successfully: ' . fireplace_format_currency($amount);
     } else {
         $addStatusMessage = 'Update transaction failed.';
     }

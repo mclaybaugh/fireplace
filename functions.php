@@ -151,6 +151,7 @@ require $templateDir . '/shortcodes/transaction-template.php';
 require $templateDir . '/components/input-number.php';
 require $templateDir . '/components/input-number-year.php';
 require $templateDir . '/components/link.php';
+require $templateDir . '/components/link-btn.php';
 require $templateDir . '/components/select.php';
 require $templateDir . '/components/select-month.php';
 require $templateDir . '/components/submit.php';
@@ -247,7 +248,7 @@ function fireplace_constrainedWidthPage(
 
 function fireplace_format_currency($x)
 {
-    return '$' . number_format($x);
+    return number_format($x);
 }
 
 // add_action('admin_bar_menu', 'fireplace_admin_bar', 500);

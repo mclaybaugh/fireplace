@@ -84,6 +84,10 @@ function fireplace_transactionTemplate($atts)
         ['Expenses', fireplace_format_currency($expenses)],
         ['Net Income', fireplace_format_currency($netIncome)],
     ];
+    $summaryColClasses = [
+        'align-left',
+        'align-right',
+    ];
 
     $categoryTableHeaders = [
         'Description',
@@ -91,16 +95,28 @@ function fireplace_transactionTemplate($atts)
         'Amount',
     ];
 
+    $categoryColClasses = [
+        'align-left',
+        'align-center',
+        'align-right'
+    ];
+
     // View
     ob_start();
     ?>
-    <?php foreach ($categoryTables as $table) : ?>
-    <h2><?php echo $table['name']; ?></h2>
-    <?php fireplace_table($categoryTableHeaders, $table['rows'], $table['footers']); ?>
-    <?php endforeach; ?>
+    <div class="flex flex-wrap">
+        <?php foreach ($categoryTables as $table) : ?>
+        <div class="p1">
+            <h2><?php echo $table['name']; ?></h2>
+            <?php fireplace_table($categoryTableHeaders, $table['rows'], $table['footers'], $categoryColClasses); ?>
+        </div>
+        <?php endforeach; ?>
 
-    <h2>Summary</h2>
-    <?php fireplace_table($summaryHeaders, $summaryRows); ?>
+        <div class="p1">
+            <h2>Summary</h2>
+            <?php fireplace_table($summaryHeaders, $summaryRows, null, $summaryColClasses); ?>
+        </div>
+    </div>
     <?php
     $content = ob_get_clean();
     return $content;
