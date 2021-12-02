@@ -1020,3 +1020,22 @@ tr:nth-of-type(2n) {
 .pb1 {
 	padding-bottom: 1rem;
 }
+
+input {
+	background-color: var(--background-color);
+	color: var(--text-color);
+	outline: none;
+	border: 1px solid var(--text-color);
+}
+
+input:focus {
+	outline-offset: -6px;
+	outline-style: dotted;
+	outline-width: thin;
+	outline-color: var(--text-color);
+}
+
+select {
+	background-color: var(--background-color);
+	color: var(--text-color);
+}
