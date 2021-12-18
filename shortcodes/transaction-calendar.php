@@ -71,7 +71,10 @@ function fireplace_transactionCalendar($atts)
     $isFirst = true;
     $previousTimestamp = false;
     $prevYearMonthDay = false;
+    global $todaysDate;
     $todaysDate = $currentDatetime->format('Y-m-d');
+    global $todayBalance;
+    $todayBalance = false;
 
     // run query
     $args = [
@@ -316,9 +319,15 @@ function addMissingDays($transactionRows, $balance, $startTime, $endTime)
     // var_dump(date('Y-m-d', $endTime));
     // echo "</pre>";
     $endDate = date('Y-m-d', strtotime('+1 day', $endTime));
+    global $todaysDate;
     for ($time = $startTime; date('Y-m-d', $time) !== $endDate; $time = strtotime('+1 day', $time)) {
+        $dateFormatted = date('Y-m-d', $time);
+        if ($dateFormatted === $todaysDate) {
+            global $todayBalance;
+            $todayBalance = $balance;
+        }
         $transactionRows[] = [
-            date('Y-m-d', $time),
+            $dateFormatted,
             '-',
             fireplace_format_currency($balance),
             '-',
