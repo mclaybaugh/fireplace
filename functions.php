@@ -157,27 +157,6 @@ require $templateDir . '/components/select-month.php';
 require $templateDir . '/components/submit.php';
 require $templateDir . '/components/table.php';
 
-
-
-/**
- * For private post types, prevent the "publish" status on save.
- */
-add_filter('wp_insert_post_data', 'fireplace_private_post_types');
-function fireplace_private_post_types($post)
-{
-    $private_types = [
-        'journal',
-        'idea',
-        'task',
-        'transaction',
-    ];
-    if (in_array($post['post_type'], $private_types)
-    && $post['post_status'] == 'publish') {
-        $post['post_status'] = 'private';
-    }
-    return $post;
-}
-
 add_action('wp_head', 'fireplace_outputInlineStyle');
 function fireplace_outputInlineStyle()
 {
@@ -267,3 +246,27 @@ function fireplace_format_currency($x)
 //         ]
 //     ]);
 // }
+
+function fireplace_redirects() {
+    $postType = get_post_type();
+    $privatePostTypes = [
+        'task',
+        'journal',
+        'idea',
+        'transaction',
+    ];
+    if (in_array($postType, $privatePostTypes)) {
+        auth_redirect();
+    }
+
+    $privateTaxonomies = [
+        'recurring_task',
+        'transaction_category',
+    ];
+    foreach ($privateTaxonomies as $tax) {
+        if (is_tax($tax)) {
+            auth_redirect();
+        }
+    }
+}
+add_action('template_redirect', 'fireplace_redirects');
