@@ -1,17 +1,11 @@
 <?php
 function fireplace_register_task() {
-
-	/**
-	 * Post Type: Tasks.
-	 */
-
 	$labels = [
-		"name" => __( "Tasks", "twentytwentyone" ),
-		"singular_name" => __( "Task", "twentytwentyone" ),
+		"name" => "Tasks",
+		"singular_name" => "Task",
 	];
-
 	$args = [
-		"label" => __( "Tasks", "twentytwentyone" ),
+		"label" => "Tasks",
 		"labels" => $labels,
 		"description" => "",
 		"public" => true,
@@ -28,25 +22,34 @@ function fireplace_register_task() {
 		"capability_type" => "fireplace_task",
 		"map_meta_cap" => true,
 		"hierarchical" => false,
-		"rewrite" => [ "slug" => "task", "with_front" => true ],
+		"rewrite" => [
+			"slug" => "task",
+			"with_front" => true
+		],
 		"query_var" => true,
 		"menu_icon" => 'dashicons-yes',
-		"supports" => [ "title", "editor", "thumbnail", 'custom-fields', 'revisions' ],
+		"supports" => [
+			"title",
+			"editor",
+			"thumbnail",
+			'custom-fields',
+			'revisions'
+		],
 		"show_in_graphql" => false,
 	];
 
 	register_post_type( "task", $args );
 }
 
-add_action( 'init', 'fireplace_register_task' );
+add_action('init', 'fireplace_register_task');
 
 function fireplace_register_tax_recurring_task() {
 	$labels = [
-		"name" => __( "Recurring Tasks", "fireplace" ),
-		"singular_name" => __( "Recurring Task", "fireplace" ),
+		"name" => "Recurring Tasks",
+		"singular_name" => "Recurring Task",
 	];
 	$args = [
-		"label" => __( "Recurring Tasks", "fireplace" ),
+		"label" => "Recurring Tasks",
 		"labels" => $labels,
 		"public" => true,
 		"publicly_queryable" => true,
@@ -55,7 +58,10 @@ function fireplace_register_tax_recurring_task() {
 		"show_in_menu" => true,
 		"show_in_nav_menus" => false,
 		"query_var" => true,
-		"rewrite" => [ 'slug' => 'recurring_task', 'with_front' => true, ],
+		"rewrite" => [
+			'slug' => 'recurring_task',
+			'with_front' => true,
+		],
 		"show_admin_column" => true,
 		"show_in_rest" => true,
 		"show_tagcloud" => false,
@@ -64,6 +70,132 @@ function fireplace_register_tax_recurring_task() {
 		"show_in_quick_edit" => false,
 		"show_in_graphql" => false,
 	];
-	register_taxonomy( "recurring_task", [ "task" ], $args );
+	register_taxonomy("recurring_task", ["task"], $args);
 }
-add_action( 'init', 'fireplace_register_tax_recurring_task' );
+add_action('init', 'fireplace_register_tax_recurring_task');
+
+if (function_exists('acf_add_local_field_group')) {
+	acf_add_local_field_group(array(
+		'key' => 'group_621848f1394c6',
+		'title' => 'Recurring Task Fields',
+		'fields' => array(
+			array(
+				'key' => 'field_621848f920d8a',
+				'label' => 'Date',
+				'name' => 'start_date',
+				'type' => 'date_picker',
+				'instructions' => '',
+				'required' => 0,
+				'conditional_logic' => 0,
+				'wrapper' => array(
+					'width' => '',
+					'class' => '',
+					'id' => '',
+				),
+				'display_format' => 'm/d/Y',
+				'return_format' => 'm/d/Y',
+				'first_day' => 0,
+			),
+			array(
+				'key' => 'field_62185104a47c9',
+				'label' => 'Is Recurring',
+				'name' => 'is_recurring',
+				'type' => 'true_false',
+				'instructions' => '',
+				'required' => 0,
+				'conditional_logic' => 0,
+				'wrapper' => array(
+					'width' => '',
+					'class' => '',
+					'id' => '',
+				),
+				'message' => '',
+				'default_value' => 0,
+				'ui' => 0,
+				'ui_on_text' => '',
+				'ui_off_text' => '',
+			),
+			array(
+				'key' => 'field_6218509fce0b7',
+				'label' => 'Frequency',
+				'name' => 'frequency',
+				'type' => 'number',
+				'instructions' => '',
+				'required' => 0,
+				'conditional_logic' => array(
+					array(
+						array(
+							'field' => 'field_62185104a47c9',
+							'operator' => '==',
+							'value' => '1',
+						),
+					),
+				),
+				'wrapper' => array(
+					'width' => '',
+					'class' => '',
+					'id' => '',
+				),
+				'default_value' => '',
+				'placeholder' => '',
+				'prepend' => '',
+				'append' => '',
+				'min' => '',
+				'max' => '',
+				'step' => '',
+			),
+			array(
+				'key' => 'field_621850b9ce0b8',
+				'label' => 'Frequency Unit',
+				'name' => 'frequency_unit',
+				'type' => 'radio',
+				'instructions' => '',
+				'required' => 0,
+				'conditional_logic' => array(
+					array(
+						array(
+							'field' => 'field_62185104a47c9',
+							'operator' => '==',
+							'value' => '1',
+						),
+					),
+				),
+				'wrapper' => array(
+					'width' => '',
+					'class' => '',
+					'id' => '',
+				),
+				'choices' => array(
+					'day' => 'Days',
+					'week' => 'Weeks',
+					'month' => 'Months',
+					'year' => 'Years',
+				),
+				'allow_null' => 0,
+				'other_choice' => 0,
+				'default_value' => '',
+				'layout' => 'vertical',
+				'return_format' => 'value',
+				'save_other_choice' => 0,
+			),
+		),
+		'location' => array(
+			array(
+				array(
+					'param' => 'taxonomy',
+					'operator' => '==',
+					'value' => 'recurring_task',
+				),
+			),
+		),
+		'menu_order' => 0,
+		'position' => 'normal',
+		'style' => 'default',
+		'label_placement' => 'top',
+		'instruction_placement' => 'label',
+		'hide_on_screen' => '',
+		'active' => true,
+		'description' => '',
+		'show_in_rest' => 0,
+	));
+}
