@@ -34,7 +34,7 @@ function fireplace_register_idea() {
         "show_in_graphql" => false,
     ];
 
-    register_post_type( "idea", $args );
+    register_post_type( "fireplace_idea", $args );
 }
 
 add_action('init', 'fireplace_register_idea');

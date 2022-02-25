@@ -251,9 +251,9 @@ function fireplace_format_currency($x)
 function fireplace_redirects() {
     $postType = get_post_type();
     $privatePostTypes = [
-        'task',
-        'journal',
-        'idea',
+        'fireplace_task_occ',
+        'fireplace_journal',
+        'fireplace_idea',
         'transaction',
     ];
     if (in_array($postType, $privatePostTypes)) {
@@ -261,7 +261,7 @@ function fireplace_redirects() {
     }
 
     $privateTaxonomies = [
-        'recurring_task',
+        'fireplace_task',
         'transaction_category',
     ];
     foreach ($privateTaxonomies as $tax) {

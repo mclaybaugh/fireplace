@@ -1,11 +1,11 @@
 <?php
-function fireplace_register_task() {
+function fireplace_register_task_occurrence() {
 	$labels = [
-		"name" => "Tasks",
-		"singular_name" => "Task",
+		"name" => "Task Tracking",
+		"singular_name" => "Task Occurrence",
 	];
 	$args = [
-		"label" => "Tasks",
+		"label" => "Task Tracking",
 		"labels" => $labels,
 		"description" => "",
 		"public" => true,
@@ -14,7 +14,7 @@ function fireplace_register_task() {
 		"show_in_rest" => true,
 		"rest_base" => "",
 		"rest_controller_class" => "WP_REST_Posts_Controller",
-		"has_archive" => 'tasks',
+		"has_archive" => false,
 		"show_in_menu" => true,
 		"show_in_nav_menus" => false,
 		"delete_with_user" => false,
@@ -23,7 +23,7 @@ function fireplace_register_task() {
 		"map_meta_cap" => true,
 		"hierarchical" => false,
 		"rewrite" => [
-			"slug" => "task",
+			"slug" => "task_occurrence",
 			"with_front" => true
 		],
 		"query_var" => true,
@@ -38,18 +38,18 @@ function fireplace_register_task() {
 		"show_in_graphql" => false,
 	];
 
-	register_post_type( "task", $args );
+	register_post_type( "fireplace_task_occ", $args );
 }
 
-add_action('init', 'fireplace_register_task');
+add_action('init', 'fireplace_register_task_occurrence');
 
-function fireplace_register_tax_recurring_task() {
+function fireplace_register_tax_task() {
 	$labels = [
-		"name" => "Recurring Tasks",
-		"singular_name" => "Recurring Task",
+		"name" => "Tasks",
+		"singular_name" => "Task",
 	];
 	$args = [
-		"label" => "Recurring Tasks",
+		"label" => "Tasks",
 		"labels" => $labels,
 		"public" => true,
 		"publicly_queryable" => true,
@@ -59,20 +59,20 @@ function fireplace_register_tax_recurring_task() {
 		"show_in_nav_menus" => false,
 		"query_var" => true,
 		"rewrite" => [
-			'slug' => 'recurring_task',
+			'slug' => 'task',
 			'with_front' => true,
 		],
 		"show_admin_column" => true,
 		"show_in_rest" => true,
 		"show_tagcloud" => false,
-		"rest_base" => "recurring_task",
+		"rest_base" => "fireplace_task",
 		"rest_controller_class" => "WP_REST_Terms_Controller",
 		"show_in_quick_edit" => false,
 		"show_in_graphql" => false,
 	];
-	register_taxonomy("recurring_task", ["task"], $args);
+	register_taxonomy("fireplace_task", ["fireplace_task_occ"], $args);
 }
-add_action('init', 'fireplace_register_tax_recurring_task');
+add_action('init', 'fireplace_register_tax_task');
 
 if (function_exists('acf_add_local_field_group')) {
 	acf_add_local_field_group(array(
@@ -184,7 +184,7 @@ if (function_exists('acf_add_local_field_group')) {
 				array(
 					'param' => 'taxonomy',
 					'operator' => '==',
-					'value' => 'recurring_task',
+					'value' => 'fireplace_task',
 				),
 			),
 		),
