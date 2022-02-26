@@ -60,9 +60,36 @@ function fireplace_taskList($atts)
     */
 }
 
-function fireplace_getTaskStatus($task, $mostRecentOcc, DateTimeImmutable $currentDateTime)
+function fireplace_getTaskStatus(
+    $task,
+    $mostRecentOcc,
+    DateTimeImmutable $currentDateTime)
 {
-    $startDate = get_field('start_date', $task);
-    $freqNum = get_field('frequency', $task);
-    $freqUnit = get_field('frequency_unit', $task);
+    $startDate = get_field('start_date', $task, false);
+    $startDateTime = new DateTimeImmutable($startDate);
+
+    if (!$mostRecentOcc) {
+        $dueDate = $startDateTime->format('Y-m-d');
+        $status = [
+            'completed' => false,
+            'due_date' => $dueDate,
+        ];
+    } elseif (!get_field('is_recurring', $task)) {
+        $status = [
+            'completed' => true,
+            'due_date' => false,
+        ];
+    } else {
+        $freqNum = get_field('frequency', $task);
+        $freqUnit = get_field('frequency_unit', $task);
+        // get prev and next due date
+        // (start date, start date + freq)
+        // (loop until date is future, then use future and one before)
+
+        // if occurence > prev due date AND <= next due date
+        // then complete
+        // else not complete, due next due date
+    }
+
+    return $status;
 }
