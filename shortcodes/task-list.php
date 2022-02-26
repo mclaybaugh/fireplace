@@ -89,6 +89,11 @@ function fireplace_getTaskStatus(
         // if occurence > prev due date AND <= next due date
         // then complete
         // else not complete, due next due date
+
+        // @TODO
+        // add "is_archived" field to tasks to stop them from loading on task list
+        // add archive listing to show paged tasks
+        // add template to view task history for single task
     }
 
     return $status;
