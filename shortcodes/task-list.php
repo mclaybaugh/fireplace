@@ -20,6 +20,9 @@ function fireplace_taskList($atts)
         'hide_empty' => false,
     ]);
 
+    $taskData = [];
+    $currentTimestamp = current_time('timestamp');
+    $currentDateTime = new DateTimeImmutable($currentTimestamp);
     foreach ($rtasks as $term) {
         $args = [
             'post_type' => 'fireplace_task_occ',
@@ -35,6 +38,7 @@ function fireplace_taskList($atts)
         if (count($q->posts) > 0) {
             $mostRecent = $q->posts[0];
         }
+        $taskData[] = fireplace_getTaskStatus($term, $mostRecent, $currentDateTime);
     }
     /* 
     load all recurring tasks
@@ -54,4 +58,11 @@ function fireplace_taskList($atts)
     - add notes optionally
     - add post with notes
     */
+}
+
+function fireplace_getTaskStatus($task, $mostRecentOcc, DateTimeImmutable $currentDateTime)
+{
+    $startDate = get_field('start_date', $task);
+    $freqNum = get_field('frequency', $task);
+    $freqUnit = get_field('frequency_unit', $task);
 }
