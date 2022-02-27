@@ -94,6 +94,10 @@ function fireplace_getTaskStatus(
         // add "is_archived" field to tasks to stop them from loading on task list
         // add archive listing to show paged tasks
         // add template to view task history for single task
+        // UPDATE 2022-02-26
+        // change task to post type, and then add in custom taxomonies
+        // for task categories/tags
+        // Add priority field or tax
     }
 
     return $status;
