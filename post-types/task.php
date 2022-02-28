@@ -27,7 +27,7 @@ function fireplace_register_task_occurrence() {
 			"with_front" => true
 		],
 		"query_var" => true,
-		"menu_icon" => 'dashicons-yes',
+		"menu_icon" => 'dashicons-analytics',
 		"supports" => [
 			"title",
 			"editor",
@@ -43,7 +43,7 @@ function fireplace_register_task_occurrence() {
 
 add_action('init', 'fireplace_register_task_occurrence');
 
-function fireplace_register_tax_task() {
+function fireplace_register_task() {
 	$labels = [
 		"name" => "Tasks",
 		"singular_name" => "Task",
@@ -51,28 +51,40 @@ function fireplace_register_tax_task() {
 	$args = [
 		"label" => "Tasks",
 		"labels" => $labels,
+		"description" => "",
 		"public" => true,
 		"publicly_queryable" => true,
-		"hierarchical" => false,
 		"show_ui" => true,
+		"show_in_rest" => true,
+		"rest_base" => "",
+		"rest_controller_class" => "WP_REST_Posts_Controller",
+		"has_archive" => 'tasks',
 		"show_in_menu" => true,
 		"show_in_nav_menus" => false,
-		"query_var" => true,
+		"delete_with_user" => false,
+		"exclude_from_search" => true,
+		"capability_type" => "fireplace_task",
+		"map_meta_cap" => true,
+		"hierarchical" => false,
 		"rewrite" => [
-			'slug' => 'task',
-			'with_front' => true,
+			"slug" => "task",
+			"with_front" => true
 		],
-		"show_admin_column" => true,
-		"show_in_rest" => true,
-		"show_tagcloud" => false,
-		"rest_base" => "fireplace_task",
-		"rest_controller_class" => "WP_REST_Terms_Controller",
-		"show_in_quick_edit" => false,
+		"query_var" => true,
+		"menu_icon" => 'dashicons-yes',
+		"supports" => [
+			"title",
+			"editor",
+			"thumbnail",
+			'custom-fields',
+			'revisions'
+		],
 		"show_in_graphql" => false,
 	];
-	register_taxonomy("fireplace_task", ["fireplace_task_occ"], $args);
+
+	register_post_type( "fireplace_task", $args );
 }
-add_action('init', 'fireplace_register_tax_task');
+add_action('init', 'fireplace_register_task');
 
 if (function_exists('acf_add_local_field_group')) {
 	acf_add_local_field_group(array(
@@ -182,7 +194,7 @@ if (function_exists('acf_add_local_field_group')) {
 		'location' => array(
 			array(
 				array(
-					'param' => 'taxonomy',
+					'param' => 'post_type',
 					'operator' => '==',
 					'value' => 'fireplace_task',
 				),
@@ -196,6 +208,52 @@ if (function_exists('acf_add_local_field_group')) {
 		'hide_on_screen' => '',
 		'active' => true,
 		'description' => '',
-		'show_in_rest' => 0,
+		'show_in_rest' => 1,
+	));
+	acf_add_local_field_group(array(
+		'key' => 'group_621c36207174b',
+		'title' => 'Task Occurance Fields',
+		'fields' => array(
+			array(
+				'key' => 'field_621c362a60709',
+				'label' => 'Task',
+				'name' => 'task',
+				'type' => 'post_object',
+				'instructions' => '',
+				'required' => 1,
+				'conditional_logic' => 0,
+				'wrapper' => array(
+					'width' => '',
+					'class' => '',
+					'id' => '',
+				),
+				'post_type' => array(
+					0 => 'fireplace_task',
+				),
+				'taxonomy' => '',
+				'allow_null' => 0,
+				'multiple' => 0,
+				'return_format' => 'id',
+				'ui' => 1,
+			),
+		),
+		'location' => array(
+			array(
+				array(
+					'param' => 'post_type',
+					'operator' => '==',
+					'value' => 'fireplace_task_occ',
+				),
+			),
+		),
+		'menu_order' => 0,
+		'position' => 'normal',
+		'style' => 'default',
+		'label_placement' => 'top',
+		'instruction_placement' => 'label',
+		'hide_on_screen' => '',
+		'active' => true,
+		'description' => '',
+		'show_in_rest' => 1,
 	));
 }
