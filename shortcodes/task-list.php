@@ -73,31 +73,35 @@ function fireplace_getTaskStatus(
 
     if (!$mostRecentOcc) {
         $dueDate = $startDateTime->format('Y-m-d');
-        $status = [
+        return [
             'completed' => false,
             'due_date' => $dueDate,
         ];
-    } elseif (!get_field('is_recurring', $task)) {
-        $status = [
+    }
+    
+    $isRecurring = get_field('is_recurring', $task);
+    if (!$isRecurring) {
+        return [
             'completed' => true,
             'due_date' => false,
         ];
-    } else {
-        $freqNum = get_field('frequency', $task);
-        $freqUnit = get_field('frequency_unit', $task);
-        // get prev and next due date
-        // (start date, start date + freq)
-        // (loop until date is future, then use future and one before)
-
-        // if occurence > prev due date AND <= next due date
-        // then complete
-        // else not complete, due next due date
-
-        // @TODO
-        // add "is_archived" field to tasks to stop them from loading on task list
-        // add archive listing to show paged tasks
-        // add template to view task history for single task
     }
+
+    // Recurring task that has priors
+    $freqNum = get_field('frequency', $task);
+    $freqUnit = get_field('frequency_unit', $task);
+    // get prev and next due date
+    // (start date, start date + freq)
+    // (loop until date is future, then use future and one before)
+
+    // if occurence > prev due date AND <= next due date
+    // then complete
+    // else not complete, due next due date
+
+    // @TODO
+    // add "is_archived" field to tasks to stop them from loading on task list
+    // add archive listing to show paged tasks
+    // add template to view task history for single task
 
     return [$task, $mostRecentOcc];
 }
