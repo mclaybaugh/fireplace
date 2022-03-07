@@ -42,7 +42,12 @@ function fireplace_taskList($atts)
         }
         $taskData[] = fireplace_getTaskStatus($task, $mostRecent, $currentDateTime);
     }
-    var_dump($taskData);
+    $headers = [
+        'Completed',
+        'Task Name',
+        'Due Date',
+    ];
+
     /* 
     load all recurring tasks
     for each task, get last time they were done (most recent post) and check
@@ -60,7 +65,16 @@ function fireplace_taskList($atts)
     mark complete
     - add notes optionally
     - add post with notes
+
+    // @TODO
+    // add "is_archived" field to tasks to stop them from loading on task list
+    // add archive listing to show paged tasks
+    // add template to view task history for single task
     */
+    ob_start();
+    fireplace_table($headers, $taskData);
+    $content = ob_get_clean();
+    return $content;
 }
 
 function fireplace_getTaskStatus(
@@ -70,38 +84,49 @@ function fireplace_getTaskStatus(
 {
     $startDate = get_field('start_date', $task, false);
     $startDateTime = new DateTimeImmutable($startDate);
+    $isRecurring = get_field('is_recurring', $task);
+    $title = get_the_title($task);
 
     if (!$mostRecentOcc) {
-        $dueDate = $startDateTime->format('Y-m-d');
-        return [
-            'completed' => false,
-            'due_date' => $dueDate,
-        ];
+        $completed = false;
+        $nextDueDate = $startDateTime->format('Y-m-d');
+    } elseif (!$isRecurring) {
+        $completed = true;
+        $nextDueDate = false;
+    } else {
+        // Recurring task that has priors
+        $freqNum = get_field('frequency', $task);
+        $freqUnit = get_field('frequency_unit', $task);
+
+        // get prev and next due date
+        $freq = DateInterval::createFromDateString("$freqNum $freqUnit");
+        $prevDueDate = $startDateTime;
+        $nextDueDate = $prevDueDate->add($freq);
+        while ($nextDueDate < $currentDateTime) {
+            $oldDueDate = $prevDueDate;
+            $prevDueDate = $nextDueDate;
+            $nextDueDate = $prevDueDate->add($freq);
+        }
+        // don't use most recent, use the previous two. These are named
+        // poorly I know
+        $nextDueDate = $prevDueDate;
+        $prevDueDate = $oldDueDate;
+
+
+        $rawOccDate = $mostRecentOcc->post_date;
+        $recentDateTime = new DateTimeImmutable($rawOccDate);
+        if ($recentDateTime > $prevDueDate
+        && $recentDateTime <= $nextDueDate) {
+            $completed = true;
+        } else {
+            $completed = false;
+        }
+        $nextDueDate = $nextDueDate->format('Y-m-d');
     }
-    
-    $isRecurring = get_field('is_recurring', $task);
-    if (!$isRecurring) {
-        return [
-            'completed' => true,
-            'due_date' => false,
-        ];
-    }
 
-    // Recurring task that has priors
-    $freqNum = get_field('frequency', $task);
-    $freqUnit = get_field('frequency_unit', $task);
-    // get prev and next due date
-    // (start date, start date + freq)
-    // (loop until date is future, then use future and one before)
-
-    // if occurence > prev due date AND <= next due date
-    // then complete
-    // else not complete, due next due date
-
-    // @TODO
-    // add "is_archived" field to tasks to stop them from loading on task list
-    // add archive listing to show paged tasks
-    // add template to view task history for single task
-
-    return [$task, $mostRecentOcc];
+    return [
+        $completed,
+        $title,
+        $nextDueDate,
+    ];
 }

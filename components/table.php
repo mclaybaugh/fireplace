@@ -13,7 +13,12 @@ function fireplace_table($headers, $rows, $footers = null, $colClasses = null)
         <?php foreach ($rows as $row) : ?>
             <tr>
             <?php for ($i = 0; $i < count($row); $i++) : ?>
-                <td class="<?php echo $colClasses[$i]; ?>"><?php echo $row[$i]; ?></td>
+                <td
+                <?php if ($colClasses) : ?>
+                class="<?php echo $colClasses[$i]; ?>"
+                <?php endif; ?>>
+                    <?php echo $row[$i]; ?>
+                </td>
             <?php endfor; ?>
             </tr>
         <?php endforeach; ?>
