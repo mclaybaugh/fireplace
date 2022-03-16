@@ -1,4 +1,5 @@
 <?php
+
 /**
  * fireplace functions and definitions
  *
@@ -7,12 +8,12 @@
  * @package fireplace
  */
 
-if ( ! defined( 'FIREPLACE_VERSION' ) ) {
+if (!defined('FIREPLACE_VERSION')) {
     // Replace the version number of the theme on each release.
-    define( 'FIREPLACE_VERSION', '1.1.1' );
+    define('FIREPLACE_VERSION', '1.1.1');
 }
 
-if ( ! function_exists( 'fireplace_setup' ) ) :
+if (!function_exists('fireplace_setup')) :
     /**
      * Sets up theme defaults and registers support for various WordPress features.
      *
@@ -20,9 +21,10 @@ if ( ! function_exists( 'fireplace_setup' ) ) :
      * runs before the init hook. The init hook is too late for some features, such
      * as indicating support for post thumbnails.
      */
-    function fireplace_setup() {
+    function fireplace_setup()
+    {
         // Add default posts and comments RSS feed links to head.
-        add_theme_support( 'automatic-feed-links' );
+        add_theme_support('automatic-feed-links');
 
         /*
          * Let WordPress manage the document title.
@@ -30,14 +32,14 @@ if ( ! function_exists( 'fireplace_setup' ) ) :
          * hard-coded <title> tag in the document head, and expect WordPress to
          * provide it for us.
          */
-        add_theme_support( 'title-tag' );
+        add_theme_support('title-tag');
 
         /*
          * Enable support for Post Thumbnails on posts and pages.
          *
          * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
          */
-        add_theme_support( 'post-thumbnails' );
+        add_theme_support('post-thumbnails');
 
         // This theme uses wp_nav_menu() in one location.
         register_nav_menus([
@@ -94,7 +96,7 @@ if ( ! function_exists( 'fireplace_setup' ) ) :
         );
     }
 endif;
-add_action( 'after_setup_theme', 'fireplace_setup' );
+add_action('after_setup_theme', 'fireplace_setup');
 
 /**
  * Set the content width in pixels, based on the theme's design and stylesheet.
@@ -103,22 +105,24 @@ add_action( 'after_setup_theme', 'fireplace_setup' );
  *
  * @global int $content_width
  */
-function fireplace_content_width() {
-    $GLOBALS['content_width'] = apply_filters( 'fireplace_content_width', 640 );
+function fireplace_content_width()
+{
+    $GLOBALS['content_width'] = apply_filters('fireplace_content_width', 640);
 }
-add_action( 'after_setup_theme', 'fireplace_content_width', 0 );
+add_action('after_setup_theme', 'fireplace_content_width', 0);
 
 /**
  * Register widget area.
  *
  * @link https://developer.wordpress.org/themes/functionality/sidebars/#registering-a-sidebar
  */
-function fireplace_widgets_init() {
+function fireplace_widgets_init()
+{
     register_sidebar(
         array(
-            'name'          => esc_html__( 'Sidebar', 'fireplace' ),
+            'name'          => esc_html__('Sidebar', 'fireplace'),
             'id'            => 'sidebar-1',
-            'description'   => esc_html__( 'Add widgets here.', 'fireplace' ),
+            'description'   => esc_html__('Add widgets here.', 'fireplace'),
             'before_widget' => '<section id="%1$s" class="widget %2$s">',
             'after_widget'  => '</section>',
             'before_title'  => '<h2 class="widget-title">',
@@ -126,15 +130,16 @@ function fireplace_widgets_init() {
         )
     );
 }
-add_action( 'widgets_init', 'fireplace_widgets_init' );
+add_action('widgets_init', 'fireplace_widgets_init');
 
 /**
  * Enqueue scripts and styles.
  */
-function fireplace_scripts() {
-    wp_enqueue_style( 'fireplace-style', get_stylesheet_uri(), array(), FIREPLACE_VERSION );
+function fireplace_scripts()
+{
+    wp_enqueue_style('fireplace-style', get_stylesheet_uri(), array(), FIREPLACE_VERSION);
 }
-add_action( 'wp_enqueue_scripts', 'fireplace_scripts' );
+add_action('wp_enqueue_scripts', 'fireplace_scripts');
 
 $templateDir = get_template_directory();
 //require $templateDir . '/inc/custom-header.php';
@@ -146,6 +151,7 @@ require $templateDir . '/post-types/idea.php';
 require $templateDir . '/post-types/task.php';
 require $templateDir . '/post-types/journal.php';
 require $templateDir . '/post-types/transaction.php';
+require $templateDir . '/post-types/option.php';
 require $templateDir . '/shortcodes/transaction-calendar.php';
 require $templateDir . '/shortcodes/transaction-template.php';
 require $templateDir . '/shortcodes/task-list.php';
@@ -167,61 +173,46 @@ function fireplace_outputInlineStyle()
     $backgroundColor = get_theme_mod('fireplace_background_color', '#ffffff');
     $textColor = get_theme_mod('fireplace_text_color', '#404040');
     $highlightColor = get_theme_mod('fireplace_highlight_color', '#3582c4');
-    ?>
+?>
     <style>
-    <?php if ($fontImportUrl) : ?>
-    @import url('<?php echo $fontImportUrl; ?>');
-    <?php endif; ?>
+        <?php if ($fontImportUrl) : ?>@import url('<?php echo $fontImportUrl; ?>');
 
-    :root {
-        <?php if ($bodyFont) : ?>
-        --body-font: <?php echo $bodyFont; ?>;
-        <?php endif; ?>
-
-        <?php if ($headingFont) : ?>
-        --heading-font: <?php echo $headingFont; ?>;
-        <?php endif; ?>
-
-        <?php if ($backgroundColor) : ?>
-        --background-color: <?php echo $backgroundColor; ?>;
-        <?php endif; ?>
-
-        <?php if ($textColor) : ?>
-        --text-color: <?php echo $textColor; ?>;
-        <?php endif; ?>
-
-        <?php if ($highlightColor) : ?>
-        --highlight-color: <?php echo $highlightColor; ?>;
-        <?php endif; ?>
-    }
+        <?php endif; ?> :root {
+            <?php if ($bodyFont) : ?>--body-font: <?php echo $bodyFont; ?>;
+            <?php endif; ?><?php if ($headingFont) : ?>--heading-font: <?php echo $headingFont; ?>;
+            <?php endif; ?><?php if ($backgroundColor) : ?>--background-color: <?php echo $backgroundColor; ?>;
+            <?php endif; ?><?php if ($textColor) : ?>--text-color: <?php echo $textColor; ?>;
+            <?php endif; ?><?php if ($highlightColor) : ?>--highlight-color: <?php echo $highlightColor; ?>;
+            <?php endif; ?>
+        }
     </style>
-    <?php
+<?php
 }
 
 function fireplace_constrainedWidthPage(
     $title,
     $contentFunction,
     $afterFunction = null,
-    $description = '')
-{
+    $description = ''
+) {
     get_header();
-    ?>
+?>
     <main id="primary" class="site-main padding-2">
-    <?php if ($title) : ?>
-        <h1 class="pageTitle"><?php echo $title; ?></h1>
-        <?php if ($description) : ?>
-            <p><?php echo $description ?></p>
+        <?php if ($title) : ?>
+            <h1 class="pageTitle"><?php echo $title; ?></h1>
+            <?php if ($description) : ?>
+                <p><?php echo $description ?></p>
+            <?php endif; ?>
+            <hr>
         <?php endif; ?>
-        <hr>
-    <?php endif; ?>
-    <div class="constrained-width">
-        <?php call_user_func($contentFunction); ?>
-    </div>
-    <?php if ($afterFunction) : ?>
-        <?php call_user_func($afterFunction); ?>
-    <?php endif; ?>
+        <div class="constrained-width">
+            <?php call_user_func($contentFunction); ?>
+        </div>
+        <?php if ($afterFunction) : ?>
+            <?php call_user_func($afterFunction); ?>
+        <?php endif; ?>
     </main>
-    <?php
+<?php
     get_sidebar();
     get_footer();
 }
@@ -248,7 +239,8 @@ function fireplace_format_currency($x)
 //     ]);
 // }
 
-function fireplace_redirects() {
+function fireplace_redirects()
+{
     $postType = get_post_type();
     $privatePostTypes = [
         'fireplace_task_occ',
