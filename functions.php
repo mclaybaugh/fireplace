@@ -137,7 +137,9 @@ add_action('widgets_init', 'fireplace_widgets_init');
  */
 function fireplace_scripts()
 {
+    $templateUri = get_template_directory_uri();
     wp_enqueue_style('fireplace-style', get_stylesheet_uri(), array(), FIREPLACE_VERSION);
+    wp_enqueue_script('fireplace-option-js', $templateUri . '/js/option-picker.js', [], FIREPLACE_VERSION);
 }
 add_action('wp_enqueue_scripts', 'fireplace_scripts');
 
@@ -152,6 +154,7 @@ require $templateDir . '/post-types/task.php';
 require $templateDir . '/post-types/journal.php';
 require $templateDir . '/post-types/transaction.php';
 require $templateDir . '/post-types/option.php';
+require $templateDir . '/shortcodes/option-picker.php';
 require $templateDir . '/shortcodes/transaction-calendar.php';
 require $templateDir . '/shortcodes/transaction-template.php';
 require $templateDir . '/shortcodes/task-list.php';
@@ -159,6 +162,7 @@ require $templateDir . '/components/input-number.php';
 require $templateDir . '/components/input-number-year.php';
 require $templateDir . '/components/link.php';
 require $templateDir . '/components/link-btn.php';
+require $templateDir . '/components/btn.php';
 require $templateDir . '/components/select.php';
 require $templateDir . '/components/select-month.php';
 require $templateDir . '/components/submit.php';
