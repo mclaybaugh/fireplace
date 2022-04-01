@@ -9,6 +9,7 @@ function fireplace_optionPicker()
         'hide_empty' => false,
     ]);
     // foreach category, get all matching posts
+    ob_start();
     foreach ($cats as $cat) {
         $args = [
             'post_type' => 'fireplace_optionx',
@@ -33,6 +34,6 @@ function fireplace_optionPicker()
         </section>
 <?php
     }
-    // output picker for each category
-    return '';
+    $content = ob_get_clean();
+    return $content;
 }
