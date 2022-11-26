@@ -1,4 +1,9 @@
-[![Build Status](https://travis-ci.org/Automattic/_s.svg?branch=master)](https://travis-ci.org/Automattic/_s)
+# Fireplace Theme (WordPress)
+
+Minimal dark theme with functionality for budgets and more. Will keep ideas for
+improvements and issues in github.
+
+# From starter theme
 
 _s
 ===
